@@ -3,8 +3,9 @@ import { usePassportClient } from '../hooks/usePassportClient';
 import { config } from '@imtbl/sdk';
 
 export default function Login() {
-  const environment = config.Environment.SANDBOX;
-  const { passport } = usePassportClient({ environment });
+  const { passport } = usePassportClient({
+    environment: config.Environment.SANDBOX,
+  });
 
   useEffect(() => {
     if (!passport) return;

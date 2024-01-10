@@ -9,9 +9,30 @@ import GamePage from './pages/GamePage';
 import './App.css';
 import LevelUpPage from './pages/LevelUpPage';
 import Login from './pages/Login';
+import { usePassportClient } from './hooks/usePassportClient';
+import { config } from '@imtbl/sdk';
+import { useState, useEffect } from 'react';
+import ProtectedRoute from './ProtectedRoute';
 
 function App() {
-  const isAuthenticated = true;
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+
+  const { passport } = usePassportClient({
+    environment: config.Environment.SANDBOX,
+  });
+
+  useEffect(() => {
+    const getUserInfo = async () => {
+      const userInfo = await passport?.getUserInfo();
+
+      console.log('userInfo', userInfo);
+
+      if (userInfo) {
+        setIsAuthenticated(true);
+      }
+    };
+    getUserInfo();
+  }, [passport]);
 
   return (
     <div className="App">
@@ -21,20 +42,29 @@ function App() {
             <Route
               path="/"
               element={
-                isAuthenticated ? <Navigate to="/game" /> : <LandingPage />
+                isAuthenticated ? (
+                  <Navigate to="/game" replace />
+                ) : (
+                  <LandingPage setIsAuthenticated={setIsAuthenticated} />
+                )
+              }
+            />
+            <Route path="/login" element={<Login />} />
+            <Route
+              path="/game"
+              element={
+                <ProtectedRoute isAuthenticated={isAuthenticated}>
+                  <GamePage setIsAuthenticated={setIsAuthenticated} />
+                </ProtectedRoute>
               }
             />
             <Route
-              path="/redirect"
-              element={isAuthenticated ? <Login /> : <Navigate to="/" />}
-            />
-            <Route
-              path="/game"
-              element={isAuthenticated ? <GamePage /> : <Navigate to="/" />}
-            />
-            <Route
               path="/levelup"
-              element={isAuthenticated ? <LevelUpPage /> : <Navigate to="/" />}
+              element={
+                <ProtectedRoute isAuthenticated={isAuthenticated}>
+                  <LevelUpPage />
+                </ProtectedRoute>
+              }
             />
           </Routes>
         </Router>
