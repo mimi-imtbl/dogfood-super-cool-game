@@ -3,11 +3,7 @@ import { init } from '../flappy-bird';
 
 export class FlappyBird extends React.Component {
   componentDidMount() {
-    window.addEventListener('load', init);
-  }
-
-  componentWillUnmount() {
-    window.removeEventListener('load', init);
+    init();
   }
 
   render() {
