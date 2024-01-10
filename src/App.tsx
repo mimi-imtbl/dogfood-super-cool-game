@@ -1,37 +1,32 @@
-import React from 'react';
+import {
+  BrowserRouter as Router,
+  Route,
+  Routes,
+  Navigate,
+} from 'react-router-dom';
+import LandingPage from './pages/LandingPage';
+import GamePage from './pages/GamePage';
 import './App.css';
-import { init } from './flappy-bird';
-
-class FlappyBird extends React.Component {
-  constructor(props: {} | Readonly<{}>) {
-    super(props);
-  }
-
-  componentDidMount() {
-    window.addEventListener('load', init);
-  }
-
-  componentWillUnmount() {
-    window.removeEventListener('load', init);
-  }
-
-  render() {
-    return (
-      <div className="flappy-bird">
-        <div className="score">
-          <span></span>
-        </div>
-        <canvas id="flappyBird"></canvas>
-      </div>
-    );
-  }
-}
 
 function App() {
+  const isAuthenticated = true;
   return (
     <div className="App">
       <header className="App-header">
-        <FlappyBird />
+        <Router>
+          <Routes>
+            <Route
+              path="/"
+              element={
+                isAuthenticated ? <Navigate to="/game" /> : <LandingPage />
+              }
+            />
+            <Route
+              path="/game"
+              element={isAuthenticated ? <GamePage /> : <Navigate to="/" />}
+            />
+          </Routes>
+        </Router>
       </header>
     </div>
   );
