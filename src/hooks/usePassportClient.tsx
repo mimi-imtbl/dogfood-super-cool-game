@@ -15,7 +15,7 @@ export const usePassportClient = ({ environment }: usePassportClientProps) => {
   );
 
   useEffect(() => {
-    const _passport = new ImtblPassport.Passport({
+    const passport = new ImtblPassport.Passport({
       baseConfig: new config.ImmutableConfiguration({ environment }),
       clientId,
       redirectUri,
@@ -24,7 +24,7 @@ export const usePassportClient = ({ environment }: usePassportClientProps) => {
       scope: 'openid offline_access email transact',
     });
 
-    setPassport(_passport);
+    setPassport(passport);
   }, [clientId, redirectUri, logoutRedirectUri, environment]);
 
   return {

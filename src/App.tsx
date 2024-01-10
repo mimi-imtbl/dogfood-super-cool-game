@@ -7,10 +7,11 @@ import {
 import LandingPage from './pages/LandingPage';
 import GamePage from './pages/GamePage';
 import './App.css';
-import LevelUpPage from "./pages/LevelUpPage";
+import LevelUpPage from './pages/LevelUpPage';
 
 function App() {
   const isAuthenticated = true;
+
   return (
     <div className="App">
       <header className="App-header">
