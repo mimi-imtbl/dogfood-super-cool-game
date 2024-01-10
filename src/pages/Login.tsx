@@ -15,5 +15,5 @@ export default function Login() {
     }
   }, [passport]);
 
-  return;
+  return <></>;
 }

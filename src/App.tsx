@@ -8,6 +8,7 @@ import LandingPage from './pages/LandingPage';
 import GamePage from './pages/GamePage';
 import './App.css';
 import LevelUpPage from './pages/LevelUpPage';
+import Login from './pages/Login';
 
 function App() {
   const isAuthenticated = true;
@@ -22,6 +23,10 @@ function App() {
               element={
                 isAuthenticated ? <Navigate to="/game" /> : <LandingPage />
               }
+            />
+            <Route
+              path="/redirect"
+              element={isAuthenticated ? <Login /> : <Navigate to="/" />}
             />
             <Route
               path="/game"
