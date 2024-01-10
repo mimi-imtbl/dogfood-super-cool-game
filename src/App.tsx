@@ -5,20 +5,16 @@ import { init } from './flappy-bird';
 class FlappyBird extends React.Component {
   constructor(props: {} | Readonly<{}>) {
     super(props);
-    this.handleLoad = this.handleLoad.bind(this);
   }
 
   componentDidMount() {
-    window.addEventListener('load', this.handleLoad);
+    window.addEventListener('load', init);
   }
 
   componentWillUnmount() {
-    window.removeEventListener('load', this.handleLoad);
+    window.removeEventListener('load', init);
   }
 
-  handleLoad() {
-    init();
-  }
   render() {
     return (
       <div className="flappy-bird">
