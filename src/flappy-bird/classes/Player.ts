@@ -42,7 +42,7 @@ class Player {
 		this.lose = false;
 		this.velocity = 0;
 		this.speed = speed;
-		this.image = createImage('https://flappy-bird-ay.netlify.app/assets/images/bird.png');
+		this.image = createImage('/assets/images/bird-jimmy.png');
 		this.position = { x: (this.screenX / 2) - this.width, y: (this.screenY / 2) - this.height };
 		this.sprite = {
 			x: 92,
