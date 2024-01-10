@@ -27,9 +27,13 @@ class Player {
 	lose: boolean;
 	frames: 0 | 1 | 2;
 	image: CanvasImageSource;
+	wings: CanvasImageSource;
 	ctx: CanvasRenderingContext2D;
 	position: { x: number, y: number };
 	sprite: Sprites;
+
+
+
 	constructor({ ctx, screenX, screenY, speed, g }: PlayerObjectConstructor) {
 		this.ctx = ctx;
 		this.gravity = g;
@@ -42,7 +46,8 @@ class Player {
 		this.lose = false;
 		this.velocity = 0;
 		this.speed = speed;
-		this.image = createImage('/assets/images/bird-jimmy.png');
+		this.image = createImage('/assets/images/ibis.png') as HTMLOrSVGImageElement;
+		this.wings = createImage('/assets/images/wings.png') as HTMLOrSVGImageElement;
 		this.position = { x: (this.screenX / 2) - this.width, y: (this.screenY / 2) - this.height };
 		this.sprite = {
 			x: 92,
@@ -50,10 +55,11 @@ class Player {
 		};
 	}
 
+
 	draw() {
 		this.ctx.drawImage(
 			this.image,
-			this.sprite.x * this.frames, // sx
+			0, // sx
 			0, // sy
 			this.sprite.x, // sWidth
 			64, // sHeight
@@ -62,6 +68,19 @@ class Player {
 			this.sprite.x1, // dWidth
 			this.height // dHeight
 		);
+
+
+		this.ctx.drawImage(
+			this.wings,
+			this.sprite.x * this.frames, // sx
+			0, // sy
+			this.sprite.x, // sWidth
+			64, // sHeight
+			this.position.x, // dx
+			this.position.y, // dy
+			this.sprite.x1, // dWidth
+			this.height // dHeight
+		)
 	}
 
 	update() {
