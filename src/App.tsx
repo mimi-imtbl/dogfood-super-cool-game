@@ -7,6 +7,7 @@ import {
 import LandingPage from './pages/LandingPage';
 import GamePage from './pages/GamePage';
 import './App.css';
+import LevelUpPage from "./pages/LevelUpPage";
 
 function App() {
   const isAuthenticated = true;
@@ -24,6 +25,10 @@ function App() {
             <Route
               path="/game"
               element={isAuthenticated ? <GamePage /> : <Navigate to="/" />}
+            />
+            <Route
+              path="/levelup"
+              element={isAuthenticated ? <LevelUpPage /> : <Navigate to="/" />}
             />
           </Routes>
         </Router>
