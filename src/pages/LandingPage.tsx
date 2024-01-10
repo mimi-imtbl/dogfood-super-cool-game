@@ -14,15 +14,15 @@ const LandingPage: React.FC<LandingPageProps> = ({ setIsAuthenticated }) => {
   const navigate = useNavigate();
 
   const loginPassport = async () => {
-    const login = await passport?.login();
-
-    console.log('userInfo', login);
-
-    if (login) {
+    try {
+      const login = await passport?.login();
+      console.log('userInfo', login);
       if (login) {
         setIsAuthenticated(true);
         navigate('/game');
       }
+    } catch (error) {
+      console.warn('passport login error', error);
     }
   };
 

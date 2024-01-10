@@ -13,7 +13,12 @@ const GamePage: React.FC<GamePageProps> = ({ setIsAuthenticated }) => {
   });
 
   const logoutPassport = async () => {
-    await passport?.logout();
+    try {
+      await passport?.logout();
+    } catch (error) {
+      console.warn('passport logout error', error);
+    }
+
     setIsAuthenticated(false);
   };
 

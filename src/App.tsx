@@ -23,12 +23,14 @@ function App() {
 
   useEffect(() => {
     const getUserInfo = async () => {
-      const userInfo = await passport?.getUserInfo();
-
-      console.log('userInfo', userInfo);
-
-      if (userInfo) {
-        setIsAuthenticated(true);
+      try {
+        const userInfo = await passport?.getUserInfo();
+        console.log('userInfo', userInfo);
+        if (userInfo) {
+          setIsAuthenticated(true);
+        }
+      } catch (error) {
+        console.warn('passport getUserInfo error', error);
       }
     };
     getUserInfo();
