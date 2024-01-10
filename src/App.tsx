@@ -8,6 +8,7 @@ import LandingPage from './pages/LandingPage';
 import GamePage from './pages/GamePage';
 import './App.css';
 import LevelUpPage from "./pages/LevelUpPage";
+import CharacterSelect from './pages/CharacterSelect';
 
 function App() {
   const isAuthenticated = true;
@@ -29,6 +30,10 @@ function App() {
             <Route
               path="/levelup"
               element={isAuthenticated ? <LevelUpPage /> : <Navigate to="/" />}
+            />
+          <Route
+              path="/character-select"
+              element={isAuthenticated ? <CharacterSelect /> : <Navigate to="/" />}
             />
           </Routes>
         </Router>
