@@ -5,12 +5,9 @@ import { useGameContext } from "../context/GameContext";
 import { Layout } from "../components/Layout";
 import { Box, Button, Card } from "@biom3/react";
 
-const tempTokenId = 402471;
 const LevelUpPage = () => {
   const { playerAsset, setPlayerAsset, tokenId } = useGameContext();
-  const { metadata, fetchMetadata } = useTokenMetadata({
-    tokenId: tempTokenId,
-  });
+  const { metadata, fetchMetadata } = useTokenMetadata({ tokenId });
   const [loading, setLoading] = useState(false);
 
   const level = metadata?.attributes.filter(
@@ -35,19 +32,17 @@ const LevelUpPage = () => {
       await axios.post(`${baseURL}/upgrade`, {
         character_id: character,
         level: (level || 0) + 1,
-        token_id: tempTokenId,
+        token_id: tokenId,
       });
+      // metadata takes a few seconds to propagate
+      await new Promise((res) => setTimeout(res, 5000));
+
+      await fetchMetadata();
     } catch (error) {
       console.log("error", error);
     } finally {
       setLoading(false);
     }
-
-    // metadata takes a few seconds to propagate
-    await new Promise((res) => setTimeout(res, 5000));
-
-    await fetchMetadata();
-    setLoading(false);
   };
 
   return (
