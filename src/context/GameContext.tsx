@@ -31,7 +31,7 @@ const defaultContext: GameContextType = {
   isConnecting: undefined,
   enabledAudio: false,
   toggleAudio: () => {},
-  walletAddress: "",
+  walletAddress: "0x18ea1d312a4037B8676c760AbfD7D1DBE65486a1",
 };
 const GameContext = createContext<GameContextType | undefined>(defaultContext);
 
@@ -51,6 +51,7 @@ export const GameContextProvider = ({ children }: GameContextProviderProps) => {
   const [enabledAudio, setEnabledAudio] = useState<boolean>(
     defaultContext.enabledAudio
   );
+  const [walletAddress, setWalletAddress] = useState<string>("");
 
   const toggleAudio = () => {
     setEnabledAudio(!enabledAudio);
@@ -94,7 +95,7 @@ export const GameContextProvider = ({ children }: GameContextProviderProps) => {
       try {
         setIsConnecting(true);
         const userInfo = await passport?.getUserInfo();
-        const addresses = await passport?.getLinkedAddresses();
+        const addresses = await passport;
         console.log("🚀 ~ addresses:", addresses);
         if (userInfo) {
           setIsAuthenticated(true);
@@ -134,6 +135,7 @@ export const GameContextProvider = ({ children }: GameContextProviderProps) => {
         isConnecting,
         enabledAudio,
         toggleAudio,
+        walletAddress,
       }}
     >
       {children}

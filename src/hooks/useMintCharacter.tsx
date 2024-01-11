@@ -19,6 +19,7 @@ export const useMintCharacter = ({
   walletAddress,
 }: UseMintCharacterProps) => {
   const [isMining, setIsMining] = useState(false);
+
   const mint = async (onSuccess?: OnSuccessFn) => {
     try {
       setIsMining(true);

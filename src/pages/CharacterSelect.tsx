@@ -51,6 +51,8 @@ const CharacterSelect = () => {
     setTokenId(characterId);
     mint(({ tokenId }: { tokenId: number }) => {
       setTokenId(tokenId);
+
+      //
       localStorage.setItem(
         `game.character.${characterId}`,
         JSON.stringify({ characterId, tokenId })
