@@ -12,3 +12,16 @@ export const getRndInteger = (min: number, max: number) => {
 export const encodeScore = (n: number): string => n.toString(32);
 
 export const decodeScore = (n: string): number => parseInt(n, 32);
+
+// debounce function with arguments and typescript support
+export const debounce = <F extends (...args: any[]) => void>(
+  func: F,
+  waitFor: number
+) => {
+  let timeout: NodeJS.Timeout;
+
+  return (...args: Parameters<F>): void => {
+    clearTimeout(timeout);
+    timeout = setTimeout(() => func(...args), waitFor);
+  };
+};
