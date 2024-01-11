@@ -4,6 +4,8 @@ import { useTokenMetadata } from "../hooks/useTokenMetadata";
 import { useGameContext } from "../context/GameContext";
 import { Layout } from "../components/Layout";
 import { Box, Button, Card } from "@biom3/react";
+import { useNavigate } from "react-router-dom";
+import { Confetti } from "../components/Confetti";
 
 const tempTokenId = 402471;
 const LevelUpPage = () => {
@@ -12,12 +14,13 @@ const LevelUpPage = () => {
     tokenId: tempTokenId,
   });
   const [loading, setLoading] = useState(false);
+  const [upgraded, setUpgraded] = useState(false);
 
   const level = metadata?.attributes.filter(
-    (obj) => obj.trait_type === "Level"
+    (obj) => obj.trait_type === "Level",
   )[0].value;
   const character = metadata?.attributes.filter(
-    (obj) => obj.trait_type === "Character"
+    (obj) => obj.trait_type === "Character",
   )[0].value;
 
   useEffect(() => {
@@ -39,8 +42,6 @@ const LevelUpPage = () => {
       });
     } catch (error) {
       console.log("error", error);
-    } finally {
-      setLoading(false);
     }
 
     // metadata takes a few seconds to propagate
@@ -48,7 +49,10 @@ const LevelUpPage = () => {
 
     await fetchMetadata();
     setLoading(false);
+    setUpgraded(true);
   };
+
+  const navigate = useNavigate();
 
   return (
     <Layout
@@ -59,6 +63,7 @@ const LevelUpPage = () => {
         justifyContent: "space-between",
       }}
     >
+      {upgraded && <Confetti />}
       <Card
         sx={{
           borderStyle: "solid",
@@ -81,16 +86,34 @@ const LevelUpPage = () => {
         <Card.Caption>Level {level}</Card.Caption>
       </Card>
       <Box>
-        <Button onClick={levelUpImage}>
-          {!loading ? "Level Up!" : "Processing..."}
-          <Button.Icon
-            icon={loading ? "Loading" : "ArrowForward"}
-            sx={{
-              fill: "base.color.accent.1",
-              width: "base.spacing.x6",
+        {!upgraded && (
+          <Button onClick={levelUpImage}>
+            {!loading ? "Level Up!" : "Processing..."}
+            <Button.Icon
+              icon={loading ? "Loading" : "ArrowForward"}
+              sx={{
+                fill: "base.color.accent.1",
+                width: "base.spacing.x6",
+              }}
+            />
+          </Button>
+        )}
+        {upgraded && (
+          <Button
+            onClick={() => {
+              navigate("/game");
             }}
-          />
-        </Button>
+          >
+            Play Again
+            <Button.Icon
+              icon="ESports"
+              sx={{
+                fill: "base.color.accent.1",
+                width: "base.spacing.x6",
+              }}
+            />
+          </Button>
+        )}
       </Box>
     </Layout>
   );
