@@ -6,6 +6,8 @@
     "@babel/core": "^7.17.2",
     "@babel/plugin-syntax-dynamic-import": "^7.8.3",
     "@babel/preset-env": "^7.16.11",
+    "@biom3/design-tokens": "^0.2.9",
+    "@biom3/react": "^0.19.33",
     "@testing-library/jest-dom": "^5.17.0",
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",
