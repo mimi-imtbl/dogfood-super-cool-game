@@ -41,7 +41,7 @@ const CharacterSelect = () => {
     characterOptions[0]
   );
 
-  const { mint } = useMintCharacter({
+  const { mint, isMining } = useMintCharacter({
     walletAddress,
     characterId: selectedCharacter.id,
   });
@@ -49,15 +49,22 @@ const CharacterSelect = () => {
   const onLetsGo = () => {
     const characterId = selectedCharacter.id;
     setTokenId(characterId);
-    mint(({ tokenId }: { tokenId: number }) => {
-      setTokenId(tokenId);
 
-      //
+    // 1. validate if already minted by checking localStorage
+
+    // 2. if not minted, mint it
+    mint(({ tokenId }: { tokenId: number }) => {
+      // 3. store the characterId and tokenId in localStorage
+
       localStorage.setItem(
         `game.character.${characterId}`,
         JSON.stringify({ characterId, tokenId })
       );
 
+      // 2.1 if already minted, get the tokenId from localStorage
+      setTokenId(tokenId);
+
+      // 5. finally navigate to game
       navigate("/game");
     });
   };
@@ -105,10 +112,10 @@ const CharacterSelect = () => {
         ))}
       </GridBox>
       <Box>
-        <Button onClick={onLetsGo}>
+        <Button onClick={onLetsGo} disabled={isMining}>
           Let's go!
           <Button.Icon
-            icon="ArrowForward"
+            icon={isMining ? "Loading" : "ArrowForward"}
             sx={{
               fill: "base.color.accent.1",
               width: "base.spacing.x6",
