@@ -1,6 +1,6 @@
-import { createContext, useContext, useEffect, useState } from 'react';
-import { config } from '@imtbl/sdk';
-import { usePassportClient } from '../hooks/usePassportClient';
+import { createContext, useContext, useEffect, useState } from "react";
+import { config } from "@imtbl/sdk";
+import { usePassportClient } from "../hooks/usePassportClient";
 
 type GameContextType = {
   score: number;
@@ -21,9 +21,9 @@ type GameContextType = {
 const defaultContext: GameContextType = {
   score: 0,
   setScore: () => {},
-  playerAsset: '',
+  playerAsset: "",
   setPlayerAsset: () => {},
-  tokenId: '402471',
+  tokenId: "402471",
   setTokenId: () => {},
   isAuthenticated: undefined,
   login: () => {},
@@ -31,7 +31,7 @@ const defaultContext: GameContextType = {
   isConnecting: undefined,
   enabledAudio: false,
   toggleAudio: () => {},
-  walletAddress: '0x18ea1d312a4037B8676c760AbfD7D1DBE65486a1',
+  walletAddress: "0x18ea1d312a4037B8676c760AbfD7D1DBE65486a1",
 };
 const GameContext = createContext<GameContextType | undefined>(defaultContext);
 
@@ -40,7 +40,7 @@ type GameContextProviderProps = {
 };
 export const GameContextProvider = ({ children }: GameContextProviderProps) => {
   const [score, setScore] = useState(0);
-  const [playerAsset, setPlayerAsset] = useState('');
+  const [playerAsset, setPlayerAsset] = useState("");
   const [tokenId, setTokenId] = useState(defaultContext.tokenId);
   const [isConnecting, setIsConnecting] = useState<boolean | undefined>(
     undefined
@@ -51,7 +51,7 @@ export const GameContextProvider = ({ children }: GameContextProviderProps) => {
   const [enabledAudio, setEnabledAudio] = useState<boolean>(
     defaultContext.enabledAudio
   );
-  const [walletAddress, setWalletAddress] = useState<string>('');
+  const [walletAddress, setWalletAddress] = useState<string>("");
 
   const toggleAudio = () => {
     setEnabledAudio(!enabledAudio);
@@ -70,7 +70,7 @@ export const GameContextProvider = ({ children }: GameContextProviderProps) => {
         onSuccess?.();
       }
     } catch (error) {
-      console.warn('passport login error', error);
+      console.warn("passport login error", error);
     } finally {
       setIsConnecting(false);
     }
@@ -82,7 +82,7 @@ export const GameContextProvider = ({ children }: GameContextProviderProps) => {
       await passport?.logout();
       onSuccess?.();
     } catch (error) {
-      console.warn('passport logout error', error);
+      console.warn("passport logout error", error);
     } finally {
       setIsConnecting(false);
     }
@@ -96,8 +96,8 @@ export const GameContextProvider = ({ children }: GameContextProviderProps) => {
         setIsConnecting(true);
         const userInfo = await passport?.getUserInfo();
         const addresses = await passport;
-        console.log('🚀 ~ addresses:', addresses);
-        console.log('🚀 ~ userInfo:', userInfo);
+        console.log("🚀 ~ addresses:", addresses);
+        console.log("🚀 ~ userInfo:", userInfo);
         if (userInfo) {
           setIsAuthenticated(true);
           // const signer = provider?.getSigner();
@@ -105,7 +105,7 @@ export const GameContextProvider = ({ children }: GameContextProviderProps) => {
           // setWalletAddress(address);
         }
       } catch (error) {
-        console.warn('passport getUserInfo error', error);
+        console.warn("passport getUserInfo error", error);
       } finally {
         setIsConnecting(false);
       }
@@ -147,7 +147,7 @@ export const GameContextProvider = ({ children }: GameContextProviderProps) => {
 export const useGameContext = () => {
   const context = useContext(GameContext);
   if (context === undefined) {
-    throw new Error('useGameContext must be used within a GameContextProvider');
+    throw new Error("useGameContext must be used within a GameContextProvider");
   }
   return context;
 };
