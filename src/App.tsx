@@ -8,7 +8,7 @@ import LandingPage from "./pages/LandingPage";
 import GamePage from "./pages/GamePage";
 import "./App.css";
 import LevelUpPage from "./pages/LevelUpPage";
-import CharacterSelect from './pages/CharacterSelect';
+import CharacterSelect from "./pages/CharacterSelect";
 import Login from "./pages/Login";
 import ProtectedRoute from "./ProtectedRoute";
 import { GameContextProvider, useGameContext } from "./context/GameContext";
@@ -42,10 +42,11 @@ const Root = () => {
             </ProtectedRoute>
           }
         />
-                  <Route
-              path="/character-select"
-              element={isAuthenticated ? <CharacterSelect /> : <Navigate to="/" />}
-            />
+        <Route
+          path="/character-select"
+          // element={isAuthenticated ? <CharacterSelect /> : <Navigate to="/" />}
+          element={<CharacterSelect />}
+        />
       </Routes>
     </Router>
   );
