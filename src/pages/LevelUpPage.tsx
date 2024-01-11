@@ -1,37 +1,54 @@
-import React, {useEffect, useState} from "react";
+import React, { useEffect, useState } from "react";
 import axios from "axios";
-import {useTokenMetadata} from "../hooks/useTokenMetadata";
-import {useGameContext} from "../context/GameContext";
-import {Layout} from "../components/Layout";
-import {Box, Button, Card} from "@biom3/react";
+import { useTokenMetadata } from "../hooks/useTokenMetadata";
+import { useGameContext } from "../context/GameContext";
+import { Layout } from "../components/Layout";
+import { Box, Button, Card } from "@biom3/react";
 
 const tempTokenId = 402471;
 const LevelUpPage = () => {
-  const {playerAsset, setPlayerAsset, tokenId} = useGameContext();
-  const {metadata, fetchMetadata} = useTokenMetadata({tokenId: tempTokenId})
-  const [loading, setLoading] = useState(false)
+  const { playerAsset, setPlayerAsset, tokenId } = useGameContext();
+  const { metadata, fetchMetadata } = useTokenMetadata({
+    tokenId: tempTokenId,
+  });
+  const [loading, setLoading] = useState(false);
 
-  const level = metadata!.attributes.filter(obj => obj.trait_type == "Level")[0].value
-  const character = metadata!.attributes.filter(obj => obj.trait_type == "Character")[0].value
+  const level = metadata?.attributes.filter(
+    (obj) => obj.trait_type === "Level"
+  )[0].value;
+  const character = metadata?.attributes.filter(
+    (obj) => obj.trait_type === "Character"
+  )[0].value;
 
   useEffect(() => {
     if (metadata?.image) {
-      setPlayerAsset(metadata!.image)
+      setPlayerAsset(metadata!.image);
     }
-  }, [metadata]);
+  }, [metadata, setPlayerAsset]);
 
   const levelUpImage = async () => {
-    const baseURL = 'https://caqou7aahh.execute-api.us-east-1.amazonaws.com/dev'
+    const baseURL =
+      "https://caqou7aahh.execute-api.us-east-1.amazonaws.com/dev";
 
-    setLoading(true)
-    let upgradeResponse = await axios.post(baseURL + '/upgrade', {character_id: character, level: level + 1, token_id: tempTokenId})
+    try {
+      setLoading(true);
+      await axios.post(`${baseURL}/upgrade`, {
+        character_id: character,
+        level: (level || 0) + 1,
+        token_id: tempTokenId,
+      });
+    } catch (error) {
+      console.log("error", error);
+    } finally {
+      setLoading(false);
+    }
 
     // metadata takes a few seconds to propagate
-    await new Promise(res => setTimeout(res, 5000))
+    await new Promise((res) => setTimeout(res, 5000));
 
-    await fetchMetadata()
-    setLoading(false)
-  }
+    await fetchMetadata();
+    setLoading(false);
+  };
 
   return (
     <Layout
@@ -67,7 +84,7 @@ const LevelUpPage = () => {
         <Button onClick={levelUpImage}>
           {!loading ? "Level Up!" : "Processing..."}
           <Button.Icon
-            icon="ArrowForward"
+            icon={loading ? "Loading" : "ArrowForward"}
             sx={{
               fill: "base.color.accent.1",
               width: "base.spacing.x6",

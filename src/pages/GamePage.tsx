@@ -1,7 +1,7 @@
 import React from "react";
 import { FlappyBird } from "../components/FlappyBird";
 import { Layout } from "../components/Layout";
-import { Box, Heading, Icon } from "@biom3/react";
+import { Box, Button, Heading, Icon } from "@biom3/react";
 import { useGameContext } from "../context/GameContext";
 import { useNavigate } from "react-router-dom";
 
@@ -24,7 +24,7 @@ const GamePage: React.FC<GamePageProps> = () => {
         title: "Lets Play!",
       }}
     >
-      <Box sx={{position: "relative"}}>
+      <Box sx={{ position: "relative" }}>
         <FlappyBird
           sx={{
             filter: isConnecting ? "blur(10px)" : "none",
@@ -55,7 +55,34 @@ const GamePage: React.FC<GamePageProps> = () => {
           </Box>
         )}
       </Box>
-      <button onClick={() => navigate('/levelup')}>Level Up</button>
+      <Box
+        sx={{
+          width: "80%",
+          display: "flex",
+          justifyContent: "space-around",
+        }}
+      >
+        <Button onClick={() => navigate("/levelup")}>
+          Level Up
+          <Button.Icon
+            icon="Minting"
+            sx={{
+              fill: "base.color.accent.1",
+              width: "base.spacing.x6",
+            }}
+          />
+        </Button>
+        <Button onClick={() => navigate("/character-select")}>
+          Swap Character
+          <Button.Icon
+            icon="Swap"
+            sx={{
+              fill: "base.color.accent.2",
+              width: "base.spacing.x6",
+            }}
+          />
+        </Button>
+      </Box>
     </Layout>
   );
 };
