@@ -22,22 +22,26 @@ export const useTokenMetadata = ({
   const [metadata, setMetadata] = useState<metaDataResponse | null>(null);
   const collection = collectionAddress || defaultCollectionAddress;
 
+  let fetchMetadata = async () => {
+    if (tokenId) {
+      const url = collectionsApi
+        .replace("__COLLECTION__", collection)
+        .replace("__TOKEN_ID__", tokenId.toString());
+
+      try {
+        let nftResponse = await axios.get(url);
+        setMetadata(nftResponse.data.result);
+      } catch (error) {
+        console.warn(error);
+      }
+    }
+  };
+
   useEffect(() => {
     (async () => {
-      if (tokenId) {
-        const url = collectionsApi
-          .replace("__COLLECTION__", collection)
-          .replace("__TOKEN_ID__", tokenId.toString());
-
-        try {
-          let nftResponse = await axios.get(url);
-          setMetadata(nftResponse.data.result);
-        } catch (error) {
-          console.warn(error);
-        }
-      }
+      await fetchMetadata();
     })();
   }, [tokenId, collection]);
 
-  return metadata;
+  return {metadata, fetchMetadata}
 };
