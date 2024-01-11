@@ -1,13 +1,13 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { GridBox, Box, Card, Button } from "@biom3/react";
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { GridBox, Box, Card, Button } from '@biom3/react';
 
-import { Layout } from "../components/Layout";
-import "./CharacterSelect.css";
-import { useGameContext } from "../context/GameContext";
-import { useMintCharacter } from "../hooks/useMintCharacter";
+import { Layout } from '../components/Layout';
+import './CharacterSelect.css';
+import { useGameContext } from '../context/GameContext';
+import { useMintCharacter } from '../hooks/useMintCharacter';
 
 type CharacterOption = {
   id: number;
@@ -15,23 +15,23 @@ type CharacterOption = {
 };
 
 const characterOptions: CharacterOption[] = [
-  { id: 1, name: "ibis" },
-  { id: 2, name: "bull" },
-  { id: 3, name: "corgi" },
-  { id: 4, name: "kookaburra" },
-  { id: 5, name: "emu" },
-  { id: 6, name: "wombat" },
-  { id: 7, name: "kiwi" },
-  { id: 8, name: "quokka" },
-  { id: 9, name: "penguin" },
-  { id: 10, name: "wallaby" },
+  { id: 1, name: 'ibis' },
+  { id: 2, name: 'bull' },
+  { id: 3, name: 'corgi' },
+  { id: 4, name: 'kookaburra' },
+  { id: 5, name: 'emu' },
+  { id: 6, name: 'wombat' },
+  { id: 7, name: 'kiwi' },
+  { id: 8, name: 'quokka' },
+  { id: 9, name: 'penguin' },
+  { id: 10, name: 'wallaby' },
 ];
 
 const imageUrl =
-  "https://dogfooding2024.s3.amazonaws.com/images/character-image-__TOKEN__ID-1.png";
+  'https://dogfooding2024.s3.amazonaws.com/images/character-image-__TOKEN__ID-1.png';
 
 const getImageUrl = (tokenId: number) =>
-  imageUrl.replace("__TOKEN__ID", tokenId.toString());
+  imageUrl.replace('__TOKEN__ID', tokenId.toString());
 
 const CharacterSelect = () => {
   const navigate = useNavigate();
@@ -50,58 +50,57 @@ const CharacterSelect = () => {
     const characterId = selectedCharacter.id;
     setTokenId(characterId);
 
-    // 1. validate if already minted by checking localStorage
+    const character = localStorage.getItem(`game.character.${characterId}`);
 
-    // 2. if not minted, mint it
-    mint(({ tokenId }: { tokenId: number }) => {
-      // 3. store the characterId and tokenId in localStorage
-
-      localStorage.setItem(
-        `game.character.${characterId}`,
-        JSON.stringify({ characterId, tokenId })
-      );
-
-      // 2.1 if already minted, get the tokenId from localStorage
+    if (character) {
+      const { tokenId } = JSON.parse(character);
       setTokenId(tokenId);
+    } else {
+      mint(({ tokenId }: { tokenId: number }) => {
+        localStorage.setItem(
+          `game.character.${characterId}`,
+          JSON.stringify({ characterId, tokenId })
+        );
+        setTokenId(tokenId);
+      });
+    }
 
-      // 5. finally navigate to game
-      navigate("/game");
-    });
+    navigate('/game');
   };
 
   return (
     <Layout
       nav={{
-        title: "Choose your character",
+        title: 'Choose your character',
       }}
       sxOverride={{
-        justifyContent: "space-between",
+        justifyContent: 'space-between',
       }}
     >
       <GridBox
         sx={{
-          gridTemplateColumns: "repeat(4, 1fr)",
-          gridGap: "1rem",
-          mb: "2rem",
+          gridTemplateColumns: 'repeat(4, 1fr)',
+          gridGap: '1rem',
+          mb: '2rem',
         }}
       >
         {characterOptions.map((option) => (
           <Card
             sx={{
-              transform: option.id === selectedCharacter.id ? "scale(1.1)" : "",
-              borderStyle: option.id === selectedCharacter.id ? "solid" : "",
-              borderColor: "base.color.status.success.bright",
-              borderWidth: "base.border.size.600",
-              animation: "moveUpDown 1s infinite",
+              transform: option.id === selectedCharacter.id ? 'scale(1.1)' : '',
+              borderStyle: option.id === selectedCharacter.id ? 'solid' : '',
+              borderColor: 'base.color.status.success.bright',
+              borderWidth: 'base.border.size.600',
+              animation: 'moveUpDown 1s infinite',
               animationPlayState:
-                option.id === selectedCharacter.id ? "running" : "paused",
-              "& .textContainer": {
-                height: "2rem",
-                padding: "0",
-                margin: "0",
+                option.id === selectedCharacter.id ? 'running' : 'paused',
+              '& .textContainer': {
+                height: '2rem',
+                padding: '0',
+                margin: '0',
               },
-              "& .innerTextContainer": {
-                padding: "0.5rem",
+              '& .innerTextContainer': {
+                padding: '0.5rem',
               },
             }}
             onClick={() => setSelectedCharacter(option)}
@@ -115,10 +114,10 @@ const CharacterSelect = () => {
         <Button onClick={onLetsGo} disabled={isMining}>
           Let's go!
           <Button.Icon
-            icon={isMining ? "Loading" : "ArrowForward"}
+            icon={isMining ? 'Loading' : 'ArrowForward'}
             sx={{
-              fill: "base.color.accent.1",
-              width: "base.spacing.x6",
+              fill: 'base.color.accent.1',
+              width: 'base.spacing.x6',
             }}
           />
         </Button>
