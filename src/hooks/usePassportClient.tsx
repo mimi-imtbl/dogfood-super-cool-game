@@ -1,14 +1,14 @@
-import { config, passport as ImtblPassport } from '@imtbl/sdk';
-import { useEffect, useState } from 'react';
+import { config, passport as ImtblPassport } from "@imtbl/sdk";
+import { useEffect, useState } from "react";
 
 export type usePassportClientProps = {
   environment: config.Environment;
 };
 
 export const usePassportClient = ({ environment }: usePassportClientProps) => {
-  const clientId = 'SA6GIyUhpXHrSt0uWJIeWDTyVazbh5Op';
-  const redirectUri = 'http://localhost:3000/login';
-  const logoutRedirectUri = 'http://localhost:3000';
+  const clientId = "SA6GIyUhpXHrSt0uWJIeWDTyVazbh5Op";
+  const redirectUri = "http://localhost:3000/login";
+  const logoutRedirectUri = "http://localhost:3000";
 
   const [passport, setPassport] = useState<ImtblPassport.Passport | undefined>(
     undefined
@@ -20,8 +20,8 @@ export const usePassportClient = ({ environment }: usePassportClientProps) => {
       clientId,
       redirectUri,
       logoutRedirectUri,
-      audience: 'platform_api',
-      scope: 'openid offline_access email transact',
+      audience: "platform_api",
+      scope: "openid offline_access email transact",
     });
 
     setPassport(passport);

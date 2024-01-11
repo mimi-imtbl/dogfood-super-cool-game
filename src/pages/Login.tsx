@@ -1,6 +1,6 @@
-import { useEffect } from 'react';
-import { usePassportClient } from '../hooks/usePassportClient';
-import { config } from '@imtbl/sdk';
+import { useEffect } from "react";
+import { usePassportClient } from "../hooks/usePassportClient";
+import { config } from "@imtbl/sdk";
 
 export default function Login() {
   const { passport } = usePassportClient({
@@ -12,7 +12,7 @@ export default function Login() {
     try {
       passport.loginCallback();
     } catch (error) {
-      console.warn('login callback error', error);
+      console.warn("login callback error", error);
     }
   }, [passport]);
 

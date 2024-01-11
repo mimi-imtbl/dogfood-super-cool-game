@@ -1,35 +1,22 @@
-import { config } from '@imtbl/sdk';
-import React from 'react';
-import { usePassportClient } from '../hooks/usePassportClient';
-import { useNavigate } from 'react-router-dom';
+import React from "react";
+import { useNavigate } from "react-router-dom";
+import { useGameContext } from "../context/GameContext";
 
-interface LandingPageProps {
-  setIsAuthenticated: (authState: boolean) => void;
-}
-const LandingPage: React.FC<LandingPageProps> = ({ setIsAuthenticated }) => {
-  const { passport } = usePassportClient({
-    environment: config.Environment.SANDBOX,
-  });
-
+interface LandingPageProps {}
+const LandingPage: React.FC<LandingPageProps> = () => {
   const navigate = useNavigate();
+  const { login } = useGameContext();
 
-  const loginPassport = async () => {
-    try {
-      const login = await passport?.login();
-      console.log('userInfo', login);
-      if (login) {
-        setIsAuthenticated(true);
-        navigate('/game');
-      }
-    } catch (error) {
-      console.warn('passport login error', error);
-    }
+  const onLogin = () => {
+    login(() => {
+      navigate("/game");
+    });
   };
 
   return (
     <div>
       <h1>Landing Page</h1>
-      <button onClick={loginPassport}>Connect with Passport</button>
+      <button onClick={onLogin}>Connect with Passport</button>
     </div>
   );
 };

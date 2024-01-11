@@ -1,9 +1,13 @@
-import React from 'react';
-import { init } from '../flappy-bird';
+import React from "react";
+import { init } from "../flappy-bird";
 
-export class FlappyBird extends React.Component {
+export type FlappyBirdProps = {
+  playerAsset?: string;
+};
+export class FlappyBird extends React.Component<FlappyBirdProps> {
   componentDidMount() {
-    init();
+    const { playerAsset } = this.props;
+    init({ playerAsset });
   }
 
   render() {

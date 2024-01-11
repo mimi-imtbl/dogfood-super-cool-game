@@ -1,31 +1,20 @@
-import React from 'react';
-import { FlappyBird } from '../components/FlappyBird';
-import { usePassportClient } from '../hooks/usePassportClient';
-import { config } from '@imtbl/sdk';
+import React from "react";
+import { FlappyBird } from "../components/FlappyBird";
+import { useGameContext } from "../context/GameContext";
 
-interface GamePageProps {
-  setIsAuthenticated: (authState: boolean) => void;
-}
+interface GamePageProps {}
 
-const GamePage: React.FC<GamePageProps> = ({ setIsAuthenticated }) => {
-  const { passport } = usePassportClient({
-    environment: config.Environment.SANDBOX,
-  });
+const GamePage: React.FC<GamePageProps> = () => {
+  const { logout } = useGameContext();
 
-  const logoutPassport = async () => {
-    try {
-      await passport?.logout();
-    } catch (error) {
-      console.warn('passport logout error', error);
-    }
-
-    setIsAuthenticated(false);
+  const onLogout = () => {
+    logout();
   };
 
   return (
     <div>
       <h1>Game Page</h1>
-      <button onClick={logoutPassport}>Logout</button>
+      <button onClick={onLogout}>Logout</button>
       <FlappyBird />
     </div>
   );
