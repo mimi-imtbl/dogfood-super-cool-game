@@ -12,8 +12,6 @@ import CharacterSelect from "./pages/CharacterSelect";
 import Login from "./pages/Login";
 import ProtectedRoute from "./ProtectedRoute";
 import { GameContextProvider, useGameContext } from "./context/GameContext";
-import { Audio } from "./components/Audio";
-import { useState } from "react";
 import { ThemeProvider } from "./context/ThemeContext";
 
 const Root = () => {
@@ -56,12 +54,8 @@ const Root = () => {
 };
 
 export default function App() {
-  const [playAudio, setPlayAudio] = useState(false);
-
   return (
     <div className="App">
-      <button onClick={() => setPlayAudio(!playAudio)}>Toggle Audio</button>
-      <Audio playAudio={playAudio}></Audio>;
       <header className="App-header">
         <GameContextProvider>
           <ThemeProvider colorMode="darkOnLight">

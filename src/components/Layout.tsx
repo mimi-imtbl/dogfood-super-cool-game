@@ -1,11 +1,13 @@
-import React from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useGameContext } from "../context/GameContext";
-import { Box, Button, Heading } from "@biom3/react";
+import { Box, Button, Heading, Icon } from "@biom3/react";
+import { Audio } from "../components/Audio";
 
 export const NavHeader = () => {
   const { login, logout, isAuthenticated, isConnecting } = useGameContext();
   const navigate = useNavigate();
+  const [playAudio, setPlayAudio] = useState(false);
 
   const onClick = () => {
     if (isConnecting) return;
@@ -32,7 +34,13 @@ export const NavHeader = () => {
         padding: "base.spacing.x6",
       }}
     >
+      <Audio playAudio={playAudio}></Audio>
       <Heading>Flappy Bird</Heading>
+      <Icon
+        onClick={() => setPlayAudio(!playAudio)}
+        icon={playAudio ? "SoundOn" : "SoundOff"}
+        sx={{ w: "base.icon.size.500", cursor: "pointer" }}
+      />
       <Button onClick={onClick} disabled={isConnecting}>
         {isConnecting && <Button.Icon icon="Loading" />}
         {!isConnecting && isAuthenticated && <Button.Icon icon="Logout" />}
