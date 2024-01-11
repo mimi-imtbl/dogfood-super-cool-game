@@ -8,7 +8,11 @@ const LandingPage: React.FC<LandingPageProps> = () => {
   const { isAuthenticated, isConnecting } = useGameContext();
 
   return (
-    <Layout>
+    <Layout
+      nav={{
+        title: "Flappy Bird",
+      }}
+    >
       {isConnecting && (
         <Icon icon="Loading" sx={{ width: "base.icon.size.600" }} />
       )}

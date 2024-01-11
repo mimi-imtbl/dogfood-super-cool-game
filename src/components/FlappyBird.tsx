@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 import { init } from "../flappy-bird";
 import { BoxProps, Box } from "@biom3/react";
 

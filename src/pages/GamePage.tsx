@@ -4,13 +4,24 @@ import { Layout } from "../components/Layout";
 import { Box, Heading, Icon } from "@biom3/react";
 import { useGameContext } from "../context/GameContext";
 
-interface GamePageProps {}
+const imageUrl =
+  "https://dogfooding2024.s3.amazonaws.com/images/character-image-__TOKEN__ID-1.png";
 
+const getImageUrl = (tokenId: string) =>
+  tokenId ? imageUrl.replace("__TOKEN__ID", tokenId.toString()) : undefined;
+
+interface GamePageProps {}
 const GamePage: React.FC<GamePageProps> = () => {
-  const { isConnecting } = useGameContext();
+  const { isConnecting, tokenId } = useGameContext();
+
+  const playerAsset = getImageUrl(tokenId);
 
   return (
-    <Layout>
+    <Layout
+      nav={{
+        title: "Lets Play!",
+      }}
+    >
       <Box sx={{ position: "relative" }}>
         <FlappyBird
           sx={{
@@ -19,6 +30,7 @@ const GamePage: React.FC<GamePageProps> = () => {
             opacity: isConnecting ? 0.5 : 1,
             pointerEvents: isConnecting ? "none" : "all",
           }}
+          playerAsset={playerAsset}
         />
         {isConnecting && (
           <Box
