@@ -24,7 +24,7 @@ const Root = () => {
           }
         />
         <Route
-          path="/levelup"
+          path="/level-up"
           element={
             <ProtectedRoute>
               <LevelUpPage />

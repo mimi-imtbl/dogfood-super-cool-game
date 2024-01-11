@@ -70,7 +70,7 @@ export const Layout = ({ children, nav, sxOverride }: LayoutProps) => {
           flexDirection: "column",
           alignItems: "center",
           justifyContent: "space-between",
-          height: "70vh",
+          height: "80vh",
           width: "50vw",
           minWidth: "600px",
           maxWidth: "720px",

@@ -15,9 +15,14 @@ const LandingPage: React.FC<LandingPageProps> = () => {
         title: "Flappy Bird",
       }}
     >
-      {isConnecting && (
-        <Icon icon="Loading" sx={{ width: "base.icon.size.600" }} />
-      )}
+      <Icon
+        icon={isConnecting ? "Loading" : "PancakeSwap"}
+        sx={{
+          width: "base.icon.size.600",
+          fill: "base.color.accent.1",
+          my: "base.spacing.x4",
+        }}
+      />
       {!isAuthenticated && (
         <Heading sx={{ width: "70%", my: "base.spacing.x4" }}>
           {isConnecting
@@ -28,17 +33,10 @@ const LandingPage: React.FC<LandingPageProps> = () => {
       {isAuthenticated && (
         <>
           <Heading sx={{ my: "base.spacing.x4" }}>You are all set!</Heading>
-          <Icon
-            icon="PancakeSwap"
-            sx={{
-              width: "base.icon.size.600",
-              fill: "base.color.accent.1",
-              my: "base.spacing.x4",
-            }}
-          />
+
           <Button
             onClick={() => {
-              navigate("/game");
+              navigate("/character-select");
             }}
           >
             Lets Play!

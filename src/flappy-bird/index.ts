@@ -208,6 +208,22 @@ export const init = (params = {} as InputParams) => {
     }
   );
 
+  const emitGameStarted = debounce(
+    () => {
+      const score = localStorage.getItem("best-score");
+      const event = new CustomEvent("flappy-bird.game-started", {
+        detail: { score },
+      });
+
+      window.dispatchEvent(event);
+    },
+    300,
+    {
+      leading: false,
+      trailing: true,
+    }
+  );
+
   const whenPlayerDamaged = () => {
     if (!window.canLose) return;
 
@@ -319,6 +335,8 @@ export const init = (params = {} as InputParams) => {
     if (animation) cancelAnimation();
 
     setTimeout(animate, 25);
+
+    emitGameStarted();
   };
 
   const logMyName = () => {
@@ -419,6 +437,7 @@ export const init = (params = {} as InputParams) => {
     const image = createImage(IMAGES.restart);
 
     ctx.drawImage(image, width / 2 - w / 2, height / 2 - (h - 2), w, h);
+    console.log("🚀 ~ createRestartButton:");
   };
 
   canvas.addEventListener("mousedown", whenPlayerJump);
