@@ -1,9 +1,4 @@
-import {
-  BrowserRouter as Router,
-  Route,
-  Routes,
-  Navigate,
-} from "react-router-dom";
+import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import LandingPage from "./pages/LandingPage";
 import GamePage from "./pages/GamePage";
 import "./App.css";
@@ -11,42 +6,38 @@ import LevelUpPage from "./pages/LevelUpPage";
 import CharacterSelect from "./pages/CharacterSelect";
 import Login from "./pages/Login";
 import ProtectedRoute from "./ProtectedRoute";
-import { GameContextProvider, useGameContext } from "./context/GameContext";
+import { GameContextProvider } from "./context/GameContext";
 import { ThemeProvider } from "./context/ThemeContext";
 
 const Root = () => {
-  const { isAuthenticated } = useGameContext();
-
   return (
     <Router>
       <Routes>
-        <Route
-          path="/"
-          element={
-            isAuthenticated ? <Navigate to="/game" replace /> : <LandingPage />
-          }
-        />
+        <Route path="/" element={<LandingPage />} />
         <Route path="/login" element={<Login />} />
         <Route
           path="/game"
           element={
-            <ProtectedRoute isAuthenticated={isAuthenticated}>
+            <ProtectedRoute>
               <GamePage />
             </ProtectedRoute>
           }
         />
         <Route
-          path="/levelup"
+          path="/level-up"
           element={
-            <ProtectedRoute isAuthenticated={isAuthenticated}>
+            <ProtectedRoute>
               <LevelUpPage />
             </ProtectedRoute>
           }
         />
         <Route
           path="/character-select"
-          // element={isAuthenticated ? <CharacterSelect /> : <Navigate to="/" />}
-          element={<CharacterSelect />}
+          element={
+            <ProtectedRoute>
+              <CharacterSelect />
+            </ProtectedRoute>
+          }
         />
       </Routes>
     </Router>

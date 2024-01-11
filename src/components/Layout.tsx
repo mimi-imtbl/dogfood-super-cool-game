@@ -1,13 +1,16 @@
-import React, { useState } from "react";
+import React from "react";
 import { useNavigate } from "react-router-dom";
 import { useGameContext } from "../context/GameContext";
-import { Box, Button, Heading, Icon } from "@biom3/react";
+import { Box, Button, DeeplyNestedSx, Heading } from "@biom3/react";
 import { Audio } from "../components/Audio";
 
-export const NavHeader = () => {
+export type NavHeaderProps = {
+  title?: string;
+};
+
+export const NavHeader = ({ title }: NavHeaderProps) => {
   const { login, logout, isAuthenticated, isConnecting } = useGameContext();
   const navigate = useNavigate();
-  const [playAudio, setPlayAudio] = useState(false);
 
   const onClick = () => {
     if (isConnecting) return;
@@ -17,7 +20,7 @@ export const NavHeader = () => {
     }
 
     login(() => {
-      navigate("/game");
+      navigate("/character-select");
     });
   };
 
@@ -34,13 +37,8 @@ export const NavHeader = () => {
         padding: "base.spacing.x6",
       }}
     >
-      <Audio playAudio={playAudio}></Audio>
-      <Heading>Flappy Bird</Heading>
-      <Icon
-        onClick={() => setPlayAudio(!playAudio)}
-        icon={playAudio ? "SoundOn" : "SoundOff"}
-        sx={{ w: "base.icon.size.500", cursor: "pointer" }}
-      />
+      <Heading>{title}</Heading>
+      <Audio />
       <Button onClick={onClick} disabled={isConnecting}>
         {isConnecting && <Button.Icon icon="Loading" />}
         {!isConnecting && isAuthenticated && <Button.Icon icon="Logout" />}
@@ -53,7 +51,13 @@ export const NavHeader = () => {
   );
 };
 
-export const Layout = ({ children }: { children: React.ReactNode }) => {
+export type LayoutProps = {
+  children: React.ReactNode;
+  nav: NavHeaderProps;
+  sxOverride?: DeeplyNestedSx;
+};
+
+export const Layout = ({ children, nav, sxOverride }: LayoutProps) => {
   return (
     <Box
       sx={{
@@ -66,15 +70,16 @@ export const Layout = ({ children }: { children: React.ReactNode }) => {
           flexDirection: "column",
           alignItems: "center",
           justifyContent: "space-between",
-          height: "70vh",
+          height: "80vh",
           width: "50vw",
           minWidth: "600px",
           maxWidth: "720px",
           border: "1px solid",
+          borderWidth: "base.border.size.600",
           borderColor: "base.color.accent.1",
         }}
       >
-        <NavHeader />
+        <NavHeader {...nav} />
         <Box
           sx={{
             display: "flex",
@@ -84,6 +89,7 @@ export const Layout = ({ children }: { children: React.ReactNode }) => {
             height: "100%",
             width: "100%",
             padding: "base.spacing.x6",
+            ...sxOverride,
           }}
         >
           {children}

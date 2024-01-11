@@ -1,14 +1,19 @@
-/* eslint-disable jsx-a11y/alt-text */
 /* eslint-disable jsx-a11y/anchor-is-valid */
-import React, { useState } from "react";
+
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { GridBox, Box, Card, Button } from "@biom3/react";
+
+import { Layout } from "../components/Layout";
 import "./CharacterSelect.css";
+import { useGameContext } from "../context/GameContext";
 
 type CharacterOption = {
   id: number;
   name: string;
 };
 
-const CharacterOptions: CharacterOption[] = [
+const characterOptions: CharacterOption[] = [
   { id: 1, name: "ibis" },
   { id: 2, name: "bull" },
   { id: 3, name: "corgi" },
@@ -21,40 +26,80 @@ const CharacterOptions: CharacterOption[] = [
   { id: 10, name: "wallaby" },
 ];
 
+const imageUrl =
+  "https://dogfooding2024.s3.amazonaws.com/images/character-image-__TOKEN__ID-1.png";
+
+const getImageUrl = (tokenId: number) =>
+  imageUrl.replace("__TOKEN__ID", tokenId.toString());
+
 const CharacterSelect = () => {
+  const navigate = useNavigate();
+  const { setTokenId } = useGameContext();
+
   const [selectedCharacter, setSelectedCharacter] = useState<CharacterOption>(
-    CharacterOptions[0]
+    characterOptions[0]
   );
 
-  const imageUrl = (id: number) =>
-    `https://dogfooding2024.s3.amazonaws.com/images/character-image-${id}-1.png`;
-
-  // const selectCharacter = (option: CharacterOption) => {
-  //   console.log("@@@@@@ selected ", option);
-  // };
+  const onLetsGo = () => {
+    setTokenId(selectedCharacter.id);
+    navigate("/game");
+  };
 
   return (
-    <div>
-      <h1>CharacterSelect Page</h1>
-
-      <div className="select-container">
-        {CharacterOptions.map((option) => (
-          <a
-            key={option.id}
-            className={`character ${
-              option.id === selectedCharacter.id ? "character--selected" : ""
-            }`}
+    <Layout
+      nav={{
+        title: "Choose your character",
+      }}
+      sxOverride={{
+        justifyContent: "space-between",
+      }}
+    >
+      <GridBox
+        sx={{
+          gridTemplateColumns: "repeat(4, 1fr)",
+          gridGap: "1rem",
+          mb: "2rem",
+        }}
+      >
+        {characterOptions.map((option) => (
+          <Card
+            sx={{
+              transform: option.id === selectedCharacter.id ? "scale(1.1)" : "",
+              borderStyle: option.id === selectedCharacter.id ? "solid" : "",
+              borderColor: "base.color.status.success.bright",
+              borderWidth: "base.border.size.600",
+              animation: "moveUpDown 1s infinite",
+              animationPlayState:
+                option.id === selectedCharacter.id ? "running" : "paused",
+              "& .textContainer": {
+                height: "2rem",
+                padding: "0",
+                margin: "0",
+              },
+              "& .innerTextContainer": {
+                padding: "0.5rem",
+              },
+            }}
             onClick={() => setSelectedCharacter(option)}
-            href="#"
-            role="button"
           >
-            <img src={imageUrl(option.id)}></img>
-          </a>
+            <Card.AssetImage imageUrl={getImageUrl(option.id)} />
+            <Card.Caption>{option.name}</Card.Caption>
+          </Card>
         ))}
-      </div>
-
-      <button>Let's go!</button>
-    </div>
+      </GridBox>
+      <Box>
+        <Button onClick={onLetsGo}>
+          Let's go!
+          <Button.Icon
+            icon="ArrowForward"
+            sx={{
+              fill: "base.color.accent.1",
+              width: "base.spacing.x6",
+            }}
+          />
+        </Button>
+      </Box>
+    </Layout>
   );
 };
 

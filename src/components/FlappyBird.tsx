@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 import { init } from "../flappy-bird";
 import { BoxProps, Box } from "@biom3/react";
 
@@ -10,6 +10,8 @@ export const FlappyBird = ({ playerAsset, ...props }: FlappyBirdProps) => {
   useEffect(() => {
     init({ playerAsset });
   }, [playerAsset]);
+  console.count("🚀 ~ FlappyBird:");
+  console.log({ playerAsset, ...props });
 
   return (
     <Box className="flappy-bird" {...props}>

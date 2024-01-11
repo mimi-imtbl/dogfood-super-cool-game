@@ -1,18 +1,26 @@
-import React from "react";
-import { Navigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import { useGameContext } from "./context/GameContext";
+import { useEffect } from "react";
 
-interface ProtectedRouteProps {
-  isAuthenticated: boolean;
+export type ProtectedRouteProps = {
   children: JSX.Element;
-}
+};
 
-const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
-  isAuthenticated,
-  children,
-}) => {
-  if (!isAuthenticated) {
-    return <Navigate to="/" replace />;
+const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
+  const { isAuthenticated, isConnecting } = useGameContext();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (!isAuthenticated === undefined || isConnecting === undefined) return;
+    if (isAuthenticated === false && isConnecting === false) {
+      navigate("/");
+    }
+  }, [isAuthenticated, isConnecting, navigate]);
+
+  if (isAuthenticated === undefined || isConnecting === undefined) {
+    return null;
   }
+
   return children;
 };
 

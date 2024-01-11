@@ -1,6 +1,7 @@
 import Player from "./classes/Player";
 import Platform from "./classes/Platform";
 import GenericObject from "./classes/GenericObject";
+import { debounce } from "lodash";
 import { createImage, encodeScore, getRndInteger, decodeScore } from "./helper";
 import Pipe from "./classes/Pipe";
 
@@ -160,7 +161,7 @@ export const init = (params = {} as InputParams) => {
     setTimeout(() => cancelAnimationFrame(animation), 25);
   };
 
-  const whenPlayerLose = (userIsLose: boolean = false) => {
+  const whenPlayerLose = (userIsLose: boolean = false, id = "") => {
     if (
       userIsLose ||
       player.height + player.position.y + player.velocity >=
@@ -178,7 +179,55 @@ export const init = (params = {} as InputParams) => {
 
     document.body.style.cursor = "pointer";
     window.addEventListener("click", restart);
+
+    emitLatestScore(SCORE.CURRENT);
   };
+
+  const emitLatestScore = debounce(
+    (score: number) => {
+      const event = new CustomEvent("flappy-bird.game-ended", {
+        detail: { score },
+      });
+
+      window.dispatchEvent(event);
+    },
+    300,
+    {
+      leading: false,
+      trailing: true,
+    }
+  );
+
+  const emitPlayerJump = debounce(
+    () => {
+      const event = new CustomEvent("flappy-bird.player-jump", {
+        detail: {},
+      });
+
+      window.dispatchEvent(event);
+    },
+    300,
+    {
+      leading: false,
+      trailing: true,
+    }
+  );
+
+  const emitGameStarted = debounce(
+    () => {
+      const score = localStorage.getItem("best-score");
+      const event = new CustomEvent("flappy-bird.game-started", {
+        detail: { score },
+      });
+
+      window.dispatchEvent(event);
+    },
+    300,
+    {
+      leading: false,
+      trailing: true,
+    }
+  );
 
   const whenPlayerDamaged = () => {
     if (!window.canLose) return;
@@ -196,7 +245,7 @@ export const init = (params = {} as InputParams) => {
         player.position.x >= pipe.position.x - player.width &&
         player.position.x <= pipe.position.x + pipe.width
       ) {
-        whenPlayerLose();
+        whenPlayerLose(false, "1--");
       }
     });
 
@@ -257,7 +306,7 @@ export const init = (params = {} as InputParams) => {
       player.height + player.position.y + player.velocity >=
       platforms[0].position.y
     )
-      whenPlayerLose(true);
+      whenPlayerLose(true, "--2");
 
     scrollOffset += player.speed;
   };
@@ -291,6 +340,8 @@ export const init = (params = {} as InputParams) => {
     if (animation) cancelAnimation();
 
     setTimeout(animate, 25);
+
+    emitGameStarted();
   };
 
   const logMyName = () => {
@@ -382,6 +433,7 @@ export const init = (params = {} as InputParams) => {
     player.velocity = CONFIG.PLAYER_VELOCITY_WHILE_JUMP;
 
     JUMP_KEY_PRESSED = true;
+    emitPlayerJump();
   };
 
   const createRestartButton = () => {
@@ -390,6 +442,7 @@ export const init = (params = {} as InputParams) => {
     const image = createImage(IMAGES.restart);
 
     ctx.drawImage(image, width / 2 - w / 2, height / 2 - (h - 2), w, h);
+    console.log("🚀 ~ createRestartButton:");
   };
 
   canvas.addEventListener("mousedown", whenPlayerJump);

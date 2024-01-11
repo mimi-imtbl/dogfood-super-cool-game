@@ -1,5 +1,5 @@
 import { createContext, useContext, useEffect, useState } from "react";
-import { config, passport } from "@imtbl/sdk";
+import { config } from "@imtbl/sdk";
 import { usePassportClient } from "../hooks/usePassportClient";
 
 type GameContextType = {
@@ -9,10 +9,12 @@ type GameContextType = {
   setPlayerAsset: (playerAsset: string) => void;
   tokenId: string;
   setTokenId: (tokenId: any) => void;
-  isAuthenticated: boolean;
+  isAuthenticated: boolean | undefined;
   login: (onSuccess?: Function) => void;
   logout: (onSuccess?: Function) => void;
-  isConnecting: boolean;
+  isConnecting: boolean | undefined;
+  enabledAudio: boolean;
+  toggleAudio: () => void;
 };
 
 const defaultContext: GameContextType = {
@@ -22,10 +24,12 @@ const defaultContext: GameContextType = {
   setPlayerAsset: () => {},
   tokenId: "",
   setTokenId: () => {},
-  isAuthenticated: false,
+  isAuthenticated: undefined,
   login: () => {},
   logout: () => {},
-  isConnecting: false,
+  isConnecting: undefined,
+  enabledAudio: false,
+  toggleAudio: () => {},
 };
 const GameContext = createContext<GameContextType | undefined>(defaultContext);
 
@@ -36,9 +40,19 @@ export const GameContextProvider = ({ children }: GameContextProviderProps) => {
   const [score, setScore] = useState(0);
   const [playerAsset, setPlayerAsset] = useState("");
   const [tokenId, setTokenId] = useState(defaultContext.tokenId);
-  const [isConnecting, setIsConnecting] = useState(false);
+  const [isConnecting, setIsConnecting] = useState<boolean | undefined>(
+    undefined
+  );
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean | undefined>(
+    undefined
+  );
+  const [enabledAudio, setEnabledAudio] = useState<boolean>(
+    defaultContext.enabledAudio
+  );
 
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const toggleAudio = () => {
+    setEnabledAudio(!enabledAudio);
+  };
 
   const { passport } = usePassportClient({
     environment: config.Environment.SANDBOX,
@@ -77,13 +91,15 @@ export const GameContextProvider = ({ children }: GameContextProviderProps) => {
   useEffect(() => {
     const getUserInfo = async () => {
       try {
+        setIsConnecting(true);
         const userInfo = await passport?.getUserInfo();
-        console.log("🚀 ~ userInfo:", userInfo);
         if (userInfo) {
           setIsAuthenticated(true);
         }
       } catch (error) {
         console.warn("passport getUserInfo error", error);
+      } finally {
+        setIsConnecting(false);
       }
     };
     getUserInfo();
@@ -110,6 +126,8 @@ export const GameContextProvider = ({ children }: GameContextProviderProps) => {
         login,
         logout,
         isConnecting,
+        enabledAudio,
+        toggleAudio,
       }}
     >
       {children}
