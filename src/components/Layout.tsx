@@ -39,12 +39,7 @@ export const NavHeader = ({ title }: NavHeaderProps) => {
       }}
     >
       <Heading>{title}</Heading>
-      <Audio playAudio={playAudio}></Audio>
-      <Icon
-        onClick={() => setPlayAudio(!playAudio)}
-        icon={playAudio ? "SoundOn" : "SoundOff"}
-        sx={{ w: "base.icon.size.500", cursor: "pointer" }}
-      />
+      <Audio />
       <Button onClick={onClick} disabled={isConnecting}>
         {isConnecting && <Button.Icon icon="Loading" />}
         {!isConnecting && isAuthenticated && <Button.Icon icon="Logout" />}
