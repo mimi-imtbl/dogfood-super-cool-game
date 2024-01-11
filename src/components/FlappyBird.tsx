@@ -1,23 +1,22 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { init } from "../flappy-bird";
+import { BoxProps, Box } from "@biom3/react";
 
 export type FlappyBirdProps = {
   playerAsset?: string;
-};
-export class FlappyBird extends React.Component<FlappyBirdProps> {
-  componentDidMount() {
-    const { playerAsset } = this.props;
-    init({ playerAsset });
-  }
+} & BoxProps;
 
-  render() {
-    return (
-      <div className="flappy-bird">
-        <div className="score">
-          <span></span>
-        </div>
-        <canvas id="flappyBird"></canvas>
+export const FlappyBird = ({ playerAsset, ...props }: FlappyBirdProps) => {
+  useEffect(() => {
+    init({ playerAsset });
+  }, [playerAsset]);
+
+  return (
+    <Box className="flappy-bird" {...props}>
+      <div className="score">
+        <span></span>
       </div>
-    );
-  }
-}
+      <canvas id="flappyBird"></canvas>
+    </Box>
+  );
+};

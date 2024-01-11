@@ -14,6 +14,7 @@ import ProtectedRoute from "./ProtectedRoute";
 import { GameContextProvider, useGameContext } from "./context/GameContext";
 import { Audio } from "./components/Audio";
 import { useState } from "react";
+import { ThemeProvider } from "./context/ThemeContext";
 
 const Root = () => {
   const { isAuthenticated } = useGameContext();
@@ -63,7 +64,9 @@ export default function App() {
       <Audio playAudio={playAudio}></Audio>;
       <header className="App-header">
         <GameContextProvider>
-          <Root />
+          <ThemeProvider colorMode="darkOnLight">
+            <Root />
+          </ThemeProvider>
         </GameContextProvider>
       </header>
     </div>

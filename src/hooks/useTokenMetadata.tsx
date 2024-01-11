@@ -1,22 +1,43 @@
 import axios from "axios";
-import {useEffect, useState} from "react";
+import { useEffect, useState } from "react";
 
-export type useTokenMetadataProps = number | null
+export type UseTokenMetadataProps = {
+  tokenId: number;
+  collectionAddress?: string;
+};
 
 type metaDataResponse = {
-    image: string
-}
-export const useTokenMetadata = (tokenId : useTokenMetadataProps) => {
-  const [metadata, setMetadata] = useState<metaDataResponse | null>(null)
+  image: string;
+};
+
+const collectionsApi =
+  "https://api.sandbox.immutable.com/v1/chains/imtbl-zkevm-testnet/collections/__COLLECTION__/nfts/__TOKEN_ID__";
+
+const defaultCollectionAddress = "0x02Fc714aA42BdAE32b14C3985CbcCE903B5fb3a8";
+
+export const useTokenMetadata = ({
+  tokenId,
+  collectionAddress,
+}: UseTokenMetadataProps) => {
+  const [metadata, setMetadata] = useState<metaDataResponse | null>(null);
+  const collection = collectionAddress || defaultCollectionAddress;
 
   useEffect(() => {
     (async () => {
       if (tokenId) {
-        let nftResponse = await axios.get("https://api.sandbox.immutable.com/v1/chains/imtbl-zkevm-testnet/collections/0x02Fc714aA42BdAE32b14C3985CbcCE903B5fb3a8/nfts/" + tokenId)
-        setMetadata(nftResponse.data.result)
-      }
-    })()
-  }, [tokenId]);
+        const url = collectionsApi
+          .replace("__COLLECTION__", collection)
+          .replace("__TOKEN_ID__", tokenId.toString());
 
-  return metadata
-}
+        try {
+          let nftResponse = await axios.get(url);
+          setMetadata(nftResponse.data.result);
+        } catch (error) {
+          console.warn(error);
+        }
+      }
+    })();
+  }, [tokenId, collection]);
+
+  return metadata;
+};

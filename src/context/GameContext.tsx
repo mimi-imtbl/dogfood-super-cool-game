@@ -7,11 +7,12 @@ type GameContextType = {
   setScore: (score: number) => void;
   playerAsset: string;
   setPlayerAsset: (playerAsset: string) => void;
-  userInfo: passport.UserProfile;
-  setUserInfo: (userInfo: any) => void;
+  tokenId: string;
+  setTokenId: (tokenId: any) => void;
   isAuthenticated: boolean;
   login: (onSuccess?: Function) => void;
   logout: (onSuccess?: Function) => void;
+  isConnecting: boolean;
 };
 
 const defaultContext: GameContextType = {
@@ -19,15 +20,12 @@ const defaultContext: GameContextType = {
   setScore: () => {},
   playerAsset: "",
   setPlayerAsset: () => {},
-  userInfo: {
-    sub: "",
-    email: "",
-    nickname: "",
-  },
-  setUserInfo: () => {},
+  tokenId: "",
+  setTokenId: () => {},
   isAuthenticated: false,
   login: () => {},
   logout: () => {},
+  isConnecting: false,
 };
 const GameContext = createContext<GameContextType | undefined>(defaultContext);
 
@@ -37,7 +35,8 @@ type GameContextProviderProps = {
 export const GameContextProvider = ({ children }: GameContextProviderProps) => {
   const [score, setScore] = useState(0);
   const [playerAsset, setPlayerAsset] = useState("");
-  const [userInfo, setUserInfo] = useState(defaultContext.userInfo);
+  const [tokenId, setTokenId] = useState(defaultContext.tokenId);
+  const [isConnecting, setIsConnecting] = useState(false);
 
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
@@ -47,23 +46,29 @@ export const GameContextProvider = ({ children }: GameContextProviderProps) => {
 
   const login = async (onSuccess?: Function) => {
     try {
+      setIsConnecting(true);
       const login = await passport?.login();
-      console.log("userInfo", login);
+      console.log("tokenId", login);
       if (login) {
         setIsAuthenticated(true);
         onSuccess?.();
       }
     } catch (error) {
       console.warn("passport login error", error);
+    } finally {
+      setIsConnecting(false);
     }
   };
 
   const logout = async (onSuccess?: Function) => {
     try {
+      setIsConnecting(true);
       await passport?.logout();
       onSuccess?.();
     } catch (error) {
       console.warn("passport logout error", error);
+    } finally {
+      setIsConnecting(false);
     }
 
     setIsAuthenticated(false);
@@ -73,9 +78,9 @@ export const GameContextProvider = ({ children }: GameContextProviderProps) => {
     const getUserInfo = async () => {
       try {
         const userInfo = await passport?.getUserInfo();
+        console.log("🚀 ~ userInfo:", userInfo);
         if (userInfo) {
           setIsAuthenticated(true);
-          setUserInfo(userInfo);
         }
       } catch (error) {
         console.warn("passport getUserInfo error", error);
@@ -87,11 +92,9 @@ export const GameContextProvider = ({ children }: GameContextProviderProps) => {
   useEffect(() => {
     if (!isAuthenticated) return;
 
-    const getPlayerAsset = async () => {
-      // TODO: get player token metadata an extract score
-    };
-
-    getPlayerAsset();
+    // TODO:
+    // call service to mint NFT
+    // set tokenId
   }, [isAuthenticated, score]);
 
   return (
@@ -101,11 +104,12 @@ export const GameContextProvider = ({ children }: GameContextProviderProps) => {
         setScore,
         playerAsset,
         setPlayerAsset,
-        setUserInfo,
-        userInfo,
+        setTokenId,
+        tokenId,
         isAuthenticated,
         login,
         logout,
+        isConnecting,
       }}
     >
       {children}
