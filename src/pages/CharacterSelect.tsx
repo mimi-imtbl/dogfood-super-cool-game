@@ -48,8 +48,6 @@ const CharacterSelect = () => {
 
   const onLetsGo = () => {
     const characterId = selectedCharacter.id;
-    setTokenId(characterId);
-
     const character = localStorage.getItem(`game.character.${characterId}`);
 
     if (character) {
