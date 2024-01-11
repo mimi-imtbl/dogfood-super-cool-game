@@ -55,6 +55,7 @@ const CharacterSelect = () => {
       setTokenId(tokenId);
     } else {
       mint(({ tokenId }: { tokenId: number }) => {
+        console.log('minted', tokenId);
         localStorage.setItem(
           `game.character.${characterId}`,
           JSON.stringify({ characterId, tokenId })
@@ -84,6 +85,7 @@ const CharacterSelect = () => {
       >
         {characterOptions.map((option) => (
           <Card
+            key={option.id}
             sx={{
               transform: option.id === selectedCharacter.id ? 'scale(1.1)' : '',
               borderStyle: option.id === selectedCharacter.id ? 'solid' : '',

@@ -1,5 +1,5 @@
-import axios from "axios";
-import { useState } from "react";
+import axios from 'axios';
+import { useState } from 'react';
 
 export type UseMintCharacterProps = {
   characterId: number;
@@ -12,7 +12,7 @@ export type OnSuccessFn = (args: {
 }) => void;
 
 const mintUrl =
-  "https://caqou7aahh.execute-api.us-east-1.amazonaws.com/dev/mint";
+  'https://caqou7aahh.execute-api.us-east-1.amazonaws.com/dev/mint';
 
 export const useMintCharacter = ({
   characterId,
@@ -31,11 +31,11 @@ export const useMintCharacter = ({
         },
         {
           headers: {
-            "Content-Type": "application/json",
+            'Content-Type': 'application/json',
           },
         }
       );
-      const { token_id: tokenId } = response.data.result;
+      const tokenId = response.data.token_id;
       onSuccess?.({ tokenId, characterId });
     } catch (error) {
       console.log(error);
