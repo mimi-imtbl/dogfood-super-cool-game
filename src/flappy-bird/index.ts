@@ -1,264 +1,295 @@
 import Player from "./classes/Player";
 import Platform from "./classes/Platform";
 import GenericObject from "./classes/GenericObject";
-import { createImage, encodeScore, getRndInteger, decodeScore } from './helper';
+import { createImage, encodeScore, getRndInteger, decodeScore } from "./helper";
 import Pipe from "./classes/Pipe";
 
-export const init = () => {
-	/* Variables */
-	let JUMP_KEY_PRESSED = false;
+export type InputParams = {
+  playerAsset?: string;
+};
 
-	const SCORE = {
-		CURRENT: 0,
-		BEST: 0
-	};
+export const init = (params = {} as InputParams) => {
+  /* Variables */
+  let JUMP_KEY_PRESSED = false;
 
-	const CONFIG = {
-		PLAYER_VELOCITY_WHILE_JUMP: -8,
-		PLAYER_SPEED: 4,
-		FRAME_CHANGE: 25,
-		GRAVITY: 0.4
-	};
+  const SCORE = {
+    CURRENT: 0,
+    BEST: 0,
+  };
 
-	const SIZES = {
-		GROUND: {
-			WIDTH: Math.floor(37 * 2 / 3),
-			HEIGHT: Math.floor(128 * 2 / 3)
-		},
+  const CONFIG = {
+    PLAYER_VELOCITY_WHILE_JUMP: -8,
+    PLAYER_SPEED: 4,
+    FRAME_CHANGE: 25,
+    GRAVITY: 0.4,
+  };
 
-		PIPE: {
-			WIDTH: 92,
-			HEIGHT: 528
-		}
-	}
+  const SIZES = {
+    GROUND: {
+      WIDTH: Math.floor((37 * 2) / 3),
+      HEIGHT: Math.floor((128 * 2) / 3),
+    },
 
-	let animation: number,
-		width: number,
-		height: number,
-		player: Player,
-		platforms: Platform[],
-		genericObjects: GenericObject[],
-		scrollOffset: number = 0,
-		stillness: boolean = false,
-		pipes: Pipe[];
+    PIPE: {
+      WIDTH: 92,
+      HEIGHT: 528,
+    },
+  };
 
-	const BASE_URL = 'https://flappy-bird-ay.netlify.app';
-	const IMAGES = {
-		ground: BASE_URL + '/assets/images/ground.png',
-		background: BASE_URL + '/assets/images/background.png',
-		restart: BASE_URL + '/assets/images/restart.png'
-	};
+  let animation: number,
+    width: number,
+    height: number,
+    player: Player,
+    platforms: Platform[],
+    genericObjects: GenericObject[],
+    scrollOffset: number = 0,
+    stillness: boolean = false,
+    pipes: Pipe[];
 
-	const canvas = document.getElementById('flappyBird') as HTMLCanvasElement;
-	const ctx = canvas.getContext('2d') as CanvasRenderingContext2D;
+  const BASE_URL = "https://flappy-bird-ay.netlify.app";
+  const IMAGES = {
+    ground: BASE_URL + "/assets/images/ground.png",
+    background: BASE_URL + "/assets/images/background.png",
+    restart: BASE_URL + "/assets/images/restart.png",
+  };
 
-	/* Code */
-	const addNewPlatform = () => {
-		const platformImage = createImage(IMAGES.ground);
+  const canvas = document.getElementById("flappyBird") as HTMLCanvasElement;
+  const ctx = canvas.getContext("2d") as CanvasRenderingContext2D;
 
-		const platform = new Platform({
-			ctx,
-			image: platformImage,
-			width: SIZES.GROUND.WIDTH,
-			height: SIZES.GROUND.HEIGHT,
-			x: (platforms[platforms.length - 1].position.x + SIZES.GROUND.WIDTH),
-			y: height - SIZES.GROUND.HEIGHT
-		});
+  /* Code */
+  const addNewPlatform = () => {
+    const platformImage = createImage(IMAGES.ground);
 
-		platforms.push(platform);
-	}
+    const platform = new Platform({
+      ctx,
+      image: platformImage,
+      width: SIZES.GROUND.WIDTH,
+      height: SIZES.GROUND.HEIGHT,
+      x: platforms[platforms.length - 1].position.x + SIZES.GROUND.WIDTH,
+      y: height - SIZES.GROUND.HEIGHT,
+    });
 
-	const addPipe = (space: number) => {
-		const floor = height - SIZES.PIPE.HEIGHT;
-		let lastPipeX: Pipe | number = pipes[pipes.length - 1];
-		lastPipeX = lastPipeX ? lastPipeX.position.x + SIZES.PIPE.WIDTH + 200 : scrollOffset + 750;
+    platforms.push(platform);
+  };
 
-		const pipe1 = new Pipe({ctx, position: {x: lastPipeX, y: floor + space}, state: 'bottom'});
-		const pipe2 = new Pipe({
-			ctx,
-			position: {x: lastPipeX, y: pipe1.position.y - SIZES.PIPE.HEIGHT - 225},
-			state: 'top'
-		});
+  const addPipe = (space: number) => {
+    const floor = height - SIZES.PIPE.HEIGHT;
+    let lastPipeX: Pipe | number = pipes[pipes.length - 1];
+    lastPipeX = lastPipeX
+      ? lastPipeX.position.x + SIZES.PIPE.WIDTH + 200
+      : scrollOffset + 750;
 
-		pipes.push(pipe1, pipe2);
-	}
+    const pipe1 = new Pipe({
+      ctx,
+      position: { x: lastPipeX, y: floor + space },
+      state: "bottom",
+    });
+    const pipe2 = new Pipe({
+      ctx,
+      position: { x: lastPipeX, y: pipe1.position.y - SIZES.PIPE.HEIGHT - 225 },
+      state: "top",
+    });
 
-	const addPlatforms = () => {
-		const platformImage = createImage(IMAGES.ground);
+    pipes.push(pipe1, pipe2);
+  };
 
-		const groundCount = Math.floor(width / SIZES.GROUND.WIDTH) + 10;
-		for (let i = 0; i < groundCount; i++) {
-			const platform = new Platform({
-				ctx,
-				image: platformImage,
-				width: SIZES.GROUND.WIDTH,
-				height: SIZES.GROUND.HEIGHT,
-				x: (i * SIZES.GROUND.WIDTH),
-				y: height - SIZES.GROUND.HEIGHT
-			});
+  const addPlatforms = () => {
+    const platformImage = createImage(IMAGES.ground);
 
-			platforms.push(platform);
-		}
-	};
+    const groundCount = Math.floor(width / SIZES.GROUND.WIDTH) + 10;
+    for (let i = 0; i < groundCount; i++) {
+      const platform = new Platform({
+        ctx,
+        image: platformImage,
+        width: SIZES.GROUND.WIDTH,
+        height: SIZES.GROUND.HEIGHT,
+        x: i * SIZES.GROUND.WIDTH,
+        y: height - SIZES.GROUND.HEIGHT,
+      });
 
-	const addGenericObjects = () => {
-		const bgImage = createImage(IMAGES.background);
+      platforms.push(platform);
+    }
+  };
 
-		genericObjects.push(new GenericObject({
-			ctx,
-			image: bgImage,
-			width,
-			height: height - SIZES.GROUND.HEIGHT,
-			x: -1,
-			y: -1
-		}));
-	};
+  const addGenericObjects = () => {
+    const bgImage = createImage(IMAGES.background);
 
-	const loadPlayer = () => {
-		player = new Player({ctx, screenX: width, screenY: height, speed: CONFIG.PLAYER_SPEED, g: 0});
-		player.draw();
-	};
+    genericObjects.push(
+      new GenericObject({
+        ctx,
+        image: bgImage,
+        width,
+        height: height - SIZES.GROUND.HEIGHT,
+        x: -1,
+        y: -1,
+      })
+    );
+  };
 
-	const loadPlaygroundObjects = () => {
-		pipes.forEach(pipe => pipe.draw());
-	};
+  const loadPlayer = () => {
+    player = new Player({
+      ctx,
+      screenX: width,
+      screenY: height,
+      speed: CONFIG.PLAYER_SPEED,
+      g: 0,
+      playerAsset: params.playerAsset,
+    });
+    player.draw();
+  };
 
-	const reset = () => {
-		if (player) player.lose = false;
-		stillness = false;
+  const loadPlaygroundObjects = () => {
+    pipes.forEach((pipe) => pipe.draw());
+  };
 
-		pipes = [];
-		platforms = [];
-		genericObjects = [];
-	};
+  const reset = () => {
+    if (player) player.lose = false;
+    stillness = false;
 
-	const cancelAnimation = () => {
-		setTimeout(() => cancelAnimationFrame(animation), 25);
-	};
+    pipes = [];
+    platforms = [];
+    genericObjects = [];
+  };
 
-	const whenPlayerLose = (userIsLose: boolean = false) => {
-		if (userIsLose || player.height + player.position.y + player.velocity >= platforms[0].position.y) {
-			player.position.y = platforms[0].position.y - player.height;
-			player.lose = true;
+  const cancelAnimation = () => {
+    setTimeout(() => cancelAnimationFrame(animation), 25);
+  };
 
-			cancelAnimation();
-		}
-		stillness = true;
+  const whenPlayerLose = (userIsLose: boolean = false) => {
+    if (
+      userIsLose ||
+      player.height + player.position.y + player.velocity >=
+        platforms[0].position.y
+    ) {
+      player.position.y = platforms[0].position.y - player.height;
+      player.lose = true;
 
-		updateBestScore(SCORE.CURRENT);
-		createRestartButton();
+      cancelAnimation();
+    }
+    stillness = true;
 
-		document.body.style.cursor = 'pointer';
-		window.addEventListener('click', restart);
-	};
+    updateBestScore(SCORE.CURRENT);
+    createRestartButton();
 
-	const whenPlayerDamaged = () => {
-		if (!window.canLose) return;
+    document.body.style.cursor = "pointer";
+    window.addEventListener("click", restart);
+  };
 
-		let reachedPipes = 0;
-		pipes.forEach(pipe => {
-			if (player.position.x >= pipe.position.x + pipe.width) reachedPipes++;
+  const whenPlayerDamaged = () => {
+    if (!window.canLose) return;
 
-			if (
-				(
-					(pipe.state === 'bottom' && player.position.y + player.velocity >= pipe.position.y) ||
-					(pipe.state === 'top' && player.position.y - player.velocity <= pipe.position.y + pipe.height)
-				) &&
-				player.position.x >= pipe.position.x - player.width &&
-				player.position.x <= pipe.position.x + pipe.width
-			) {
-				whenPlayerLose();
-			}
-		});
+    let reachedPipes = 0;
+    pipes.forEach((pipe) => {
+      if (player.position.x >= pipe.position.x + pipe.width) reachedPipes++;
 
-		SCORE.CURRENT = Math.floor(reachedPipes / 2);
-		updateCurrentScore();
-	};
+      if (
+        ((pipe.state === "bottom" &&
+          player.position.y + player.velocity >= pipe.position.y) ||
+          (pipe.state === "top" &&
+            player.position.y - player.velocity <=
+              pipe.position.y + pipe.height)) &&
+        player.position.x >= pipe.position.x - player.width &&
+        player.position.x <= pipe.position.x + pipe.width
+      ) {
+        whenPlayerLose();
+      }
+    });
 
-	const changePlayerFrame = () => {
-		if (scrollOffset % CONFIG.FRAME_CHANGE === 0) player.nextFrame();
-	};
+    SCORE.CURRENT = Math.floor(reachedPipes / 2);
+    updateCurrentScore();
+  };
 
-	const balancePlatforms = () => {
-		if (scrollOffset > SIZES.GROUND.WIDTH && scrollOffset % SIZES.GROUND.WIDTH === 0) {
-			addNewPlatform();
-			platforms.splice(0, 1);
-		}
-	};
+  const changePlayerFrame = () => {
+    if (scrollOffset % CONFIG.FRAME_CHANGE === 0) player.nextFrame();
+  };
 
-	const balancePipes = () => {
-		const rnd = getRndInteger(300, 400);
-		addPipe(rnd);
-	};
+  const balancePlatforms = () => {
+    if (
+      scrollOffset > SIZES.GROUND.WIDTH &&
+      scrollOffset % SIZES.GROUND.WIDTH === 0
+    ) {
+      addNewPlatform();
+      platforms.splice(0, 1);
+    }
+  };
 
-	const movingObjects = () => {
-		platforms.forEach(platform => platform.position.x -= player.speed);
+  const balancePipes = () => {
+    const rnd = getRndInteger(300, 400);
+    addPipe(rnd);
+  };
 
-		pipes.forEach(pipe => pipe.position.x -= player.speed);
-	};
+  const movingObjects = () => {
+    platforms.forEach((platform) => (platform.position.x -= player.speed));
 
-	const animate = () => {
-		// Code
-		animation = requestAnimationFrame(animate);
-		ctx.clearRect(0, 0, width, height);
+    pipes.forEach((pipe) => (pipe.position.x -= player.speed));
+  };
 
-		genericObjects.forEach(obj => obj.draw());
+  const animate = () => {
+    // Code
+    animation = requestAnimationFrame(animate);
+    ctx.clearRect(0, 0, width, height);
 
-		if (!stillness) {
-			balancePlatforms();
-			changePlayerFrame();
-			movingObjects();
-		}
+    genericObjects.forEach((obj) => obj.draw());
 
-		if (!player.stillness) loadPlaygroundObjects();
+    if (!stillness) {
+      balancePlatforms();
+      changePlayerFrame();
+      movingObjects();
+    }
 
-		player.update();
+    if (!player.stillness) loadPlaygroundObjects();
 
-		if (!player.stillness) {
-			balancePipes();
-			whenPlayerDamaged();
-		}
+    player.update();
 
-		platforms.forEach(platform => platform.draw());
+    if (!player.stillness) {
+      balancePipes();
+      whenPlayerDamaged();
+    }
 
-		if (player.height + player.position.y + player.velocity >= platforms[0].position.y) whenPlayerLose(true);
+    platforms.forEach((platform) => platform.draw());
 
-		scrollOffset += player.speed;
-	};
+    if (
+      player.height + player.position.y + player.velocity >=
+      platforms[0].position.y
+    )
+      whenPlayerLose(true);
 
-	const restart = () => {
-		window.removeEventListener('click', restart);
-		document.body.style.cursor = 'default';
+    scrollOffset += player.speed;
+  };
 
-		start();
-	};
+  const restart = () => {
+    window.removeEventListener("click", restart);
+    document.body.style.cursor = "default";
 
-	const start = () => {
-		scrollOffset = 0;
-		SCORE.CURRENT = 0;
+    start();
+  };
 
-		/* Load playground */
-		reset();
+  const start = () => {
+    scrollOffset = 0;
+    SCORE.CURRENT = 0;
 
-		/* Add */
-		addGenericObjects();
-		addPlatforms();
+    /* Load playground */
+    reset();
 
-		/* Load */
-		genericObjects.forEach(obj => obj.draw());
+    /* Add */
+    addGenericObjects();
+    addPlatforms();
 
-		platforms.forEach(platform => platform.draw());
+    /* Load */
+    genericObjects.forEach((obj) => obj.draw());
 
-		loadPlayer();
-		updateCurrentScore();
+    platforms.forEach((platform) => platform.draw());
 
-		if (animation) cancelAnimation();
+    loadPlayer();
+    updateCurrentScore();
 
-		setTimeout(animate, 25);
-	};
+    if (animation) cancelAnimation();
 
-	const logMyName = () => {
-		console.log(`
+    setTimeout(animate, 25);
+  };
+
+  const logMyName = () => {
+    console.log(`
 ██╗░█████╗░███╗░░░███╗░█████╗░██╗░░░░░██╗██╗░░░██╗██████╗░██╗
 ██║██╔══██╗████╗░████║██╔══██╗██║░░░░░██║╚██╗░██╔╝██╔══██╗██║
 ██║███████║██╔████╔██║███████║██║░░░░░██║░╚████╔╝░██████╦╝██║
@@ -266,115 +297,115 @@ export const init = () => {
 ██║██║░░██║██║░╚═╝░██║██║░░██║███████╗██║░░░██║░░░██████╦╝██║
 ╚═╝╚═╝░░╚═╝╚═╝░░░░░╚═╝╚═╝░░╚═╝╚══════╝╚═╝░░░╚═╝░░░╚═════╝░╚═╝
 	`);
-	};
+  };
 
-	const resetScore = () => {
-		SCORE.CURRENT = 0;
-		SCORE.BEST = 0;
-	};
+  const resetScore = () => {
+    SCORE.CURRENT = 0;
+    SCORE.BEST = 0;
+  };
 
-	const updateScore = () => {
-		try {
-			SCORE.CURRENT = 0;
+  const updateScore = () => {
+    try {
+      SCORE.CURRENT = 0;
 
-			const scoreFromLocalStorage = localStorage.getItem('best-score');
-			let score: number;
+      const scoreFromLocalStorage = localStorage.getItem("best-score");
+      let score: number;
 
-			if (!scoreFromLocalStorage) {
-				localStorage.setItem('best-score', encodeScore(0));
-				score = 0;
-			} else score = decodeScore(scoreFromLocalStorage);
+      if (!scoreFromLocalStorage) {
+        localStorage.setItem("best-score", encodeScore(0));
+        score = 0;
+      } else score = decodeScore(scoreFromLocalStorage);
 
-			SCORE.BEST = score;
-		} catch (e) {
-			resetScore();
-		}
-	};
+      SCORE.BEST = score;
+    } catch (e) {
+      resetScore();
+    }
+  };
 
-	const updateBestScore = (score: number) => {
-		if (SCORE.BEST >= SCORE.CURRENT) return;
+  const updateBestScore = (score: number) => {
+    if (SCORE.BEST >= SCORE.CURRENT) return;
 
-		localStorage.setItem('best-score', encodeScore(score));
-		SCORE.BEST = score;
-	};
+    localStorage.setItem("best-score", encodeScore(score));
+    SCORE.BEST = score;
+  };
 
-	const updateCurrentScore = () => {
-		const score = `${SCORE.CURRENT} : ${SCORE.BEST}`;
+  const updateCurrentScore = () => {
+    const score = `${SCORE.CURRENT} : ${SCORE.BEST}`;
 
-		ctx.font = '44px FlappyBird';
-		const text = ctx.measureText(score);
+    ctx.font = "44px FlappyBird";
+    const text = ctx.measureText(score);
 
-		const x = (width / 2) - (text.width / 2);
-		const y = 100;
+    const x = width / 2 - text.width / 2;
+    const y = 100;
 
-		ctx.strokeStyle = 'rgb(0, 0, 0)';
-		ctx.lineWidth = 8;
-		ctx.strokeText(score, x, y);
-		ctx.fillStyle = 'rgb(255, 255, 255)';
-		ctx.fillText(score, x, y);
-	};
+    ctx.strokeStyle = "rgb(0, 0, 0)";
+    ctx.lineWidth = 8;
+    ctx.strokeText(score, x, y);
+    ctx.fillStyle = "rgb(255, 255, 255)";
+    ctx.fillText(score, x, y);
+  };
 
-	const init = () => {
-		window.canLose = true;
+  const init = () => {
+    window.canLose = true;
 
-		logMyName();
+    logMyName();
 
-		console.log("%cHello dear developer,", "color: green; font-size: 14px");
-		console.log("%cTry:", "color: green; font-size: 14px");
-		console.log("%cwindow.canLose = false;", "color: red; font-size: 14px");
+    console.log("%cHello dear developer,", "color: green; font-size: 14px");
+    console.log("%cTry:", "color: green; font-size: 14px");
+    console.log("%cwindow.canLose = false;", "color: red; font-size: 14px");
 
-		width = window.innerWidth > 480 ? 480 : window.innerWidth;
-		height = window.innerHeight > 640 ? 640 : window.innerHeight;
+    width = window.innerWidth > 480 ? 480 : window.innerWidth;
+    height = window.innerHeight > 640 ? 640 : window.innerHeight;
 
-		canvas.width = width;
-		canvas.height = height;
+    canvas.width = width;
+    canvas.height = height;
 
-		updateScore();
-		start();
-	};
+    updateScore();
+    start();
+  };
 
-	const whenPlayerJump = () => {
-		if (stillness) return;
+  const whenPlayerJump = () => {
+    if (stillness) return;
 
-		/* When user stillness */
-		if (player.stillness) {
-			player.stillness = false;
-			player.gravity = CONFIG.GRAVITY;
-		}
+    /* When user stillness */
+    if (player.stillness) {
+      player.stillness = false;
+      player.gravity = CONFIG.GRAVITY;
+    }
 
-		/* When user pressed space */
-		player.velocity = CONFIG.PLAYER_VELOCITY_WHILE_JUMP;
+    /* When user pressed space */
+    player.velocity = CONFIG.PLAYER_VELOCITY_WHILE_JUMP;
 
-		JUMP_KEY_PRESSED = true;
-	};
+    JUMP_KEY_PRESSED = true;
+  };
 
-	const createRestartButton = () => {
-		const w = 142;
-		const h = 50;
-		const image = createImage(IMAGES.restart);
+  const createRestartButton = () => {
+    const w = 142;
+    const h = 50;
+    const image = createImage(IMAGES.restart);
 
-		ctx.drawImage(image, (width / 2) - (w / 2), (height / 2) - (h - 2), w, h);
-	};
+    ctx.drawImage(image, width / 2 - w / 2, height / 2 - (h - 2), w, h);
+  };
 
-	canvas.addEventListener('mousedown', whenPlayerJump);
+  canvas.addEventListener("mousedown", whenPlayerJump);
 
-	document.addEventListener('keypress', ({keyCode}) => {
-		if (![32, 38].includes(keyCode) || player.lose || JUMP_KEY_PRESSED) return;
+  document.addEventListener("keypress", ({ keyCode }) => {
+    if (![32, 38].includes(keyCode) || player.lose || JUMP_KEY_PRESSED) return;
 
-		whenPlayerJump();
-	});
+    whenPlayerJump();
+  });
 
-	document.addEventListener('keyup', ({keyCode}) => {
-		if (![32, 38].includes(keyCode)) return;
+  document.addEventListener("keyup", ({ keyCode }) => {
+    if (![32, 38].includes(keyCode)) return;
 
-		JUMP_KEY_PRESSED = false;
-	});
+    JUMP_KEY_PRESSED = false;
+  });
 
-	canvas.addEventListener('mouseup', () => {
-		JUMP_KEY_PRESSED = false;
-	});
+  canvas.addEventListener("mouseup", () => {
+    JUMP_KEY_PRESSED = false;
+  });
 
-	/* When dom content loaded */
-	//document.addEventListener('DOMContentLoaded', init);
-	init();
-}
+  /* When dom content loaded */
+  //document.addEventListener('DOMContentLoaded', init);
+  init();
+};

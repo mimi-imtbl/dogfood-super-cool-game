@@ -1,3 +1,3 @@
 interface Window {
-	canLose: boolean;
+  canLose: boolean;
 }
