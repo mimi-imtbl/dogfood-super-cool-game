@@ -8,6 +8,10 @@ export type UseTokenMetadataProps = {
 
 type metaDataResponse = {
   image: string;
+  attributes: {
+    trait_type: string,
+    value: number
+  }[]
 };
 
 const collectionsApi =
