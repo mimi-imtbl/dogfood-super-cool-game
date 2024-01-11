@@ -3,6 +3,7 @@ import { FlappyBird } from "../components/FlappyBird";
 import { Layout } from "../components/Layout";
 import { Box, Heading, Icon } from "@biom3/react";
 import { useGameContext } from "../context/GameContext";
+import { useNavigate } from "react-router-dom";
 
 const imageUrl =
   "https://dogfooding2024.s3.amazonaws.com/images/character-image-__TOKEN__ID-1.png";
@@ -15,6 +16,7 @@ const GamePage: React.FC<GamePageProps> = () => {
   const { isConnecting, tokenId } = useGameContext();
 
   const playerAsset = getImageUrl(tokenId);
+  const navigate = useNavigate();
 
   return (
     <Layout
@@ -22,7 +24,7 @@ const GamePage: React.FC<GamePageProps> = () => {
         title: "Lets Play!",
       }}
     >
-      <Box sx={{ position: "relative" }}>
+      <Box sx={{position: "relative"}}>
         <FlappyBird
           sx={{
             filter: isConnecting ? "blur(10px)" : "none",
@@ -53,6 +55,7 @@ const GamePage: React.FC<GamePageProps> = () => {
           </Box>
         )}
       </Box>
+      <button onClick={() => navigate('/levelup')}>Level Up</button>
     </Layout>
   );
 };
