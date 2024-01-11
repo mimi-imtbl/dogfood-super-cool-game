@@ -7,6 +7,7 @@ import { GridBox, Box, Card, Button } from "@biom3/react";
 import { Layout } from "../components/Layout";
 import "./CharacterSelect.css";
 import { useGameContext } from "../context/GameContext";
+import { useMintCharacter } from "../hooks/useMintCharacter";
 
 type CharacterOption = {
   id: number;
@@ -34,15 +35,29 @@ const getImageUrl = (tokenId: number) =>
 
 const CharacterSelect = () => {
   const navigate = useNavigate();
-  const { setTokenId } = useGameContext();
+  const { setTokenId, walletAddress } = useGameContext();
 
   const [selectedCharacter, setSelectedCharacter] = useState<CharacterOption>(
     characterOptions[0]
   );
 
+  const { mint } = useMintCharacter({
+    walletAddress,
+    characterId: selectedCharacter.id,
+  });
+
   const onLetsGo = () => {
-    setTokenId(selectedCharacter.id);
-    navigate("/game");
+    const characterId = selectedCharacter.id;
+    setTokenId(characterId);
+    mint(({ tokenId }: { tokenId: number }) => {
+      setTokenId(tokenId);
+      localStorage.setItem(
+        `game.character.${characterId}`,
+        JSON.stringify({ characterId, tokenId })
+      );
+
+      navigate("/game");
+    });
   };
 
   return (

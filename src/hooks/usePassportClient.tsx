@@ -23,7 +23,6 @@ export const usePassportClient = ({ environment }: usePassportClientProps) => {
       audience: "platform_api",
       scope: "openid offline_access email transact",
     });
-
     setPassport(passport);
   }, [clientId, redirectUri, logoutRedirectUri, environment]);
 

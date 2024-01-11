@@ -15,6 +15,7 @@ type GameContextType = {
   isConnecting: boolean | undefined;
   enabledAudio: boolean;
   toggleAudio: () => void;
+  walletAddress: string;
 };
 
 const defaultContext: GameContextType = {
@@ -22,7 +23,7 @@ const defaultContext: GameContextType = {
   setScore: () => {},
   playerAsset: "",
   setPlayerAsset: () => {},
-  tokenId: "",
+  tokenId: "402471",
   setTokenId: () => {},
   isAuthenticated: undefined,
   login: () => {},
@@ -30,6 +31,7 @@ const defaultContext: GameContextType = {
   isConnecting: undefined,
   enabledAudio: false,
   toggleAudio: () => {},
+  walletAddress: "",
 };
 const GameContext = createContext<GameContextType | undefined>(defaultContext);
 
@@ -62,7 +64,6 @@ export const GameContextProvider = ({ children }: GameContextProviderProps) => {
     try {
       setIsConnecting(true);
       const login = await passport?.login();
-      console.log("tokenId", login);
       if (login) {
         setIsAuthenticated(true);
         onSuccess?.();
@@ -93,8 +94,13 @@ export const GameContextProvider = ({ children }: GameContextProviderProps) => {
       try {
         setIsConnecting(true);
         const userInfo = await passport?.getUserInfo();
+        const addresses = await passport?.getLinkedAddresses();
+        console.log("🚀 ~ addresses:", addresses);
         if (userInfo) {
           setIsAuthenticated(true);
+          // const signer = provider?.getSigner();
+          // const address = (await signer?.getAddress()) || "";
+          // setWalletAddress(address);
         }
       } catch (error) {
         console.warn("passport getUserInfo error", error);

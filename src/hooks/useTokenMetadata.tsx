@@ -1,17 +1,17 @@
 import axios from "axios";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 
 export type UseTokenMetadataProps = {
-  tokenId: number;
+  tokenId: string;
   collectionAddress?: string;
 };
 
 type metaDataResponse = {
   image: string;
   attributes: {
-    trait_type: string,
-    value: number
-  }[]
+    trait_type: string;
+    value: number;
+  }[];
 };
 
 const collectionsApi =
@@ -26,11 +26,11 @@ export const useTokenMetadata = ({
   const [metadata, setMetadata] = useState<metaDataResponse | null>(null);
   const collection = collectionAddress || defaultCollectionAddress;
 
-  let fetchMetadata = async () => {
+  let fetchMetadata = useCallback(async () => {
     if (tokenId) {
       const url = collectionsApi
         .replace("__COLLECTION__", collection)
-        .replace("__TOKEN_ID__", tokenId.toString());
+        .replace("__TOKEN_ID__", tokenId);
 
       try {
         let nftResponse = await axios.get(url);
@@ -39,13 +39,13 @@ export const useTokenMetadata = ({
         console.warn(error);
       }
     }
-  };
+  }, [tokenId, collection]);
 
   useEffect(() => {
     (async () => {
       await fetchMetadata();
     })();
-  }, [tokenId, collection]);
+  }, [tokenId, fetchMetadata]);
 
-  return {metadata, fetchMetadata}
+  return { metadata, fetchMetadata };
 };
