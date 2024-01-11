@@ -28,7 +28,7 @@ const defaultContext: GameContextType = {
   login: () => {},
   logout: () => {},
   isConnecting: undefined,
-  enabledAudio: true,
+  enabledAudio: false,
   toggleAudio: () => {},
 };
 const GameContext = createContext<GameContextType | undefined>(defaultContext);

@@ -1,7 +1,7 @@
-import React, { useState } from "react";
+import React from "react";
 import { useNavigate } from "react-router-dom";
 import { useGameContext } from "../context/GameContext";
-import { Box, Button, DeeplyNestedSx, Heading, Icon } from "@biom3/react";
+import { Box, Button, DeeplyNestedSx, Heading } from "@biom3/react";
 import { Audio } from "../components/Audio";
 
 export type NavHeaderProps = {
@@ -11,7 +11,6 @@ export type NavHeaderProps = {
 export const NavHeader = ({ title }: NavHeaderProps) => {
   const { login, logout, isAuthenticated, isConnecting } = useGameContext();
   const navigate = useNavigate();
-  const [playAudio, setPlayAudio] = useState(false);
 
   const onClick = () => {
     if (isConnecting) return;
