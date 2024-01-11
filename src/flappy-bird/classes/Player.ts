@@ -6,6 +6,10 @@ type PlayerObjectConstructor = {
   speed: number;
   ctx: CanvasRenderingContext2D;
   playerAsset?: string;
+	playerData?: {
+		id: number,
+		level: number,
+	};
 };
 
 type Sprites = {
@@ -37,8 +41,15 @@ class Player {
     speed,
     g,
     playerAsset,
+		playerData
   }: PlayerObjectConstructor) {
-    const asset = playerAsset || "/assets/images/ibis.png";
+
+		playerData = playerData ? playerData :  {
+		id: 2,
+		level: 5,
+	}
+
+    const asset = `/assets/images/92px-character-image-${playerData.id}-${playerData.level}.png` || "/assets/images/ibis.png";
 
     this.ctx = ctx;
     this.gravity = g;
@@ -71,7 +82,7 @@ class Player {
       0, // sx
       0, // sy
       this.sprite.x, // sWidth
-      64, // sHeight
+      92, // sHeight
       this.position.x, // dx
       this.position.y, // dy
       this.sprite.x1, // dWidth

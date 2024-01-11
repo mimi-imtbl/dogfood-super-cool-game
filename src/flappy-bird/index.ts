@@ -79,15 +79,20 @@ export const init = (params = {} as InputParams) => {
       ? lastPipeX.position.x + SIZES.PIPE.WIDTH + 200
       : scrollOffset + 750;
 
+    // TODO get from localstorage
+    const characterId = 1;
+
     const pipe1 = new Pipe({
       ctx,
       position: { x: lastPipeX, y: floor + space },
       state: "bottom",
+      ibisMode: characterId === 1
     });
     const pipe2 = new Pipe({
       ctx,
       position: { x: lastPipeX, y: pipe1.position.y - SIZES.PIPE.HEIGHT - 225 },
       state: "top",
+      ibisMode: characterId === 1
     });
 
     pipes.push(pipe1, pipe2);

@@ -4,6 +4,7 @@ type PipeObjectConstructor = {
   ctx: CanvasRenderingContext2D;
   position: { x: number; y: number };
   state: "top" | "bottom";
+  ibisMode?: boolean;
 };
 
 class Pipe {
@@ -14,13 +15,13 @@ class Pipe {
   ctx: CanvasRenderingContext2D;
   position: { x: number; y: number };
 
-  constructor({ ctx, position, state }: PipeObjectConstructor) {
+  constructor({ ctx, position, state, ibisMode }: PipeObjectConstructor) {
     this.position = position;
     this.height = 528;
     this.width = 92;
     this.state = state;
     this.image = createImage(
-      `https://flappy-bird-ay.netlify.app/assets/images/pipe-${this.state}.png`
+      `/assets/images/${ibisMode ? 'bin' : 'pipe'}-${this.state}.png`
     );
     this.ctx = ctx;
   }
