@@ -21,14 +21,14 @@ export const Audio = () => {
     const loseSound = audioRef.current[2];
 
     window.addEventListener("flappy-bird.game-ended", () => {
-      loseSound?.play();
+      enabledAudio && loseSound?.play();
     });
 
     window.addEventListener("flappy-bird.player-jump", () => {
       try {
         jumpSound.volume = 0.5;
         jumpSound.currentTime = 0;
-        jumpSound?.play();
+        enabledAudio && jumpSound?.play();
       } catch {}
     });
 
