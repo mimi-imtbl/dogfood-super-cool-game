@@ -17,6 +17,7 @@ type GameContextType = {
   isConnecting: boolean | undefined;
   enabledAudio: boolean;
   toggleAudio: () => void;
+  walletAddress: string;
 };
 
 const defaultContext: GameContextType = {
@@ -34,6 +35,7 @@ const defaultContext: GameContextType = {
   isConnecting: undefined,
   enabledAudio: false,
   toggleAudio: () => {},
+  walletAddress: "0x18ea1d312a4037B8676c760AbfD7D1DBE65486a1",
 };
 const GameContext = createContext<GameContextType | undefined>(defaultContext);
 
@@ -54,6 +56,7 @@ export const GameContextProvider = ({ children }: GameContextProviderProps) => {
   const [enabledAudio, setEnabledAudio] = useState<boolean>(
     defaultContext.enabledAudio,
   );
+  const [walletAddress, setWalletAddress] = useState<string>("");
 
   const toggleAudio = () => {
     setEnabledAudio(!enabledAudio);
@@ -135,6 +138,7 @@ export const GameContextProvider = ({ children }: GameContextProviderProps) => {
         isConnecting,
         enabledAudio,
         toggleAudio,
+        walletAddress
       }}
     >
       {children}
