@@ -26,6 +26,7 @@ export const Audio = () => {
 
     window.addEventListener("flappy-bird.player-jump", () => {
       try {
+        jumpSound.volume = 0.5;
         jumpSound.currentTime = 0;
         jumpSound?.play();
       } catch {}
