@@ -112,7 +112,7 @@ const CharacterSelect = () => {
       </GridBox>
       <Box>
         <Button onClick={onLetsGo} disabled={isMinting}>
-          Let"s go!
+          Let's go!
           <Button.Icon
             icon={isMinting ? "Loading" : "ArrowForward"}
             sx={{
