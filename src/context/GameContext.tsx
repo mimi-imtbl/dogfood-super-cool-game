@@ -51,7 +51,9 @@ export const GameContextProvider = ({ children }: GameContextProviderProps) => {
   const [enabledAudio, setEnabledAudio] = useState<boolean>(
     defaultContext.enabledAudio,
   );
-  const [walletAddress, setWalletAddress] = useState<string>("");
+  const [walletAddress, setWalletAddress] = useState<string>(
+    defaultContext.walletAddress,
+  );
 
   const toggleAudio = () => {
     setEnabledAudio(!enabledAudio);
@@ -131,7 +133,7 @@ export const GameContextProvider = ({ children }: GameContextProviderProps) => {
         isConnecting,
         enabledAudio,
         toggleAudio,
-        walletAddress
+        walletAddress,
       }}
     >
       {children}

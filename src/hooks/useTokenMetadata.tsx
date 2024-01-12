@@ -8,14 +8,11 @@ export type UseTokenMetadataProps = {
 
 type metaDataResponse = {
   image: string;
-  attributes: {
-    trait_type: string,
-    value: number
-  }[]
+  character: number;
+  level: number;
 };
 
-const collectionsApi =
-  "https://api.sandbox.immutable.com/v1/chains/imtbl-zkevm-testnet/collections/__COLLECTION__/nfts/__TOKEN_ID__";
+const metadataApi = "https://dogfooding2024.s3.amazonaws.com/__TOKEN_ID__";
 
 const defaultCollectionAddress = "0x02Fc714aA42BdAE32b14C3985CbcCE903B5fb3a8";
 
@@ -28,13 +25,11 @@ export const useTokenMetadata = ({
 
   let fetchMetadata = async () => {
     if (tokenId) {
-      const url = collectionsApi
-        .replace("__COLLECTION__", collection)
-        .replace("__TOKEN_ID__", tokenId.toString());
+      const url = metadataApi.replace("__TOKEN_ID__", tokenId.toString());
 
       try {
         let nftResponse = await axios.get(url);
-        setMetadata(nftResponse.data.result);
+        setMetadata(nftResponse.data);
       } catch (error) {
         console.warn(error);
       }
@@ -47,5 +42,5 @@ export const useTokenMetadata = ({
     })();
   }, [tokenId, collection]);
 
-  return {metadata, fetchMetadata}
+  return { metadata, fetchMetadata };
 };
