@@ -9,8 +9,6 @@ type GameContextType = {
   setPlayerAsset: (playerAsset: string) => void;
   tokenId: string;
   setTokenId: (tokenId: any) => void;
-  characterId: string;
-  setCharacterId: (characterId: any) => void;
   isAuthenticated: boolean | undefined;
   login: (onSuccess?: Function) => void;
   logout: (onSuccess?: Function) => void;
@@ -27,8 +25,6 @@ const defaultContext: GameContextType = {
   setPlayerAsset: () => {},
   tokenId: "",
   setTokenId: () => {},
-  characterId: "",
-  setCharacterId: () => {},
   isAuthenticated: undefined,
   login: () => {},
   logout: () => {},
@@ -46,7 +42,6 @@ export const GameContextProvider = ({ children }: GameContextProviderProps) => {
   const [score, setScore] = useState(0);
   const [playerAsset, setPlayerAsset] = useState("");
   const [tokenId, setTokenId] = useState(defaultContext.tokenId);
-  const [characterId, setCharacterId] = useState(defaultContext.characterId);
   const [isConnecting, setIsConnecting] = useState<boolean | undefined>(
     undefined,
   );
@@ -130,8 +125,6 @@ export const GameContextProvider = ({ children }: GameContextProviderProps) => {
         setPlayerAsset,
         setTokenId,
         tokenId,
-        characterId,
-        setCharacterId,
         isAuthenticated,
         login,
         logout,
