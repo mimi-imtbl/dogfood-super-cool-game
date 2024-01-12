@@ -7,6 +7,7 @@ import { GridBox, Box, Card, Button } from "@biom3/react";
 import { Layout } from "../components/Layout";
 import "./CharacterSelect.css";
 import { useGameContext } from "../context/GameContext";
+import { useMintCharacter } from "../hooks/useMintCharacter";
 
 type CharacterOption = {
   id: number;
@@ -34,18 +35,35 @@ const getImageUrl = (tokenId: number) =>
 
 const CharacterSelect = () => {
   const navigate = useNavigate();
-  const { setTokenId } = useGameContext();
+  const { setTokenId, walletAddress } = useGameContext();
 
   const [selectedCharacter, setSelectedCharacter] = useState<CharacterOption>(
     characterOptions[0]
   );
 
-  const onLetsGo = () => {
-    setTokenId(selectedCharacter.id);
+  const { mint, isMinting } = useMintCharacter({
+    walletAddress,
+    characterId: selectedCharacter.id,
+  });
 
-    localStorage.setItem("best-score", "0");
-    localStorage.setItem("character_id", `${selectedCharacter.id}`);
-    localStorage.setItem("level", `1`);
+  const onLetsGo = () => {
+    const characterId = selectedCharacter.id;
+    const character = localStorage.getItem(`game.character.${characterId}`);
+    console.log("character", character);
+
+    if (character) {
+      const { tokenId } = JSON.parse(character);
+      setTokenId(tokenId);
+    } else {
+      mint(({ tokenId }: { tokenId: number }) => {
+        console.log("minted", tokenId);
+        localStorage.setItem(
+          `game.character.${characterId}`,
+          JSON.stringify({ characterId, tokenId })
+        );
+        setTokenId(tokenId);
+      });
+    }
 
     navigate("/game");
   };
@@ -68,6 +86,7 @@ const CharacterSelect = () => {
       >
         {characterOptions.map((option) => (
           <Card
+            key={option.id}
             sx={{
               transform: option.id === selectedCharacter.id ? "scale(1.1)" : "",
               borderStyle: option.id === selectedCharacter.id ? "solid" : "",
@@ -93,10 +112,10 @@ const CharacterSelect = () => {
         ))}
       </GridBox>
       <Box>
-        <Button onClick={onLetsGo}>
+        <Button onClick={onLetsGo} disabled={isMinting}>
           Let's go!
           <Button.Icon
-            icon="ArrowForward"
+            icon={isMinting ? "Loading" : "ArrowForward"}
             sx={{
               fill: "base.color.accent.1",
               width: "base.spacing.x6",
