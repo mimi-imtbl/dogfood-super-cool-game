@@ -27,11 +27,8 @@ const characterOptions: CharacterOption[] = [
   { id: 10, name: "wallaby" },
 ];
 
-const imageUrl =
-  "https://dogfooding2024.s3.amazonaws.com/images/character-image-__TOKEN__ID-1.png";
-
-const getImageUrl = (tokenId: number) =>
-  imageUrl.replace("__TOKEN__ID", tokenId.toString());
+const getImageUrl = (characterId: number) =>
+  `https://dogfooding2024.s3.amazonaws.com/images/character-image-${characterId}-1.png`;
 
 const CharacterSelect = () => {
   const navigate = useNavigate();
@@ -51,6 +48,8 @@ const CharacterSelect = () => {
     const character = localStorage.getItem(`game.character.${characterId}`);
     console.log("character", character);
 
+    localStorage.setItem("game.selected.character", characterId + "");
+
     if (character) {
       const { tokenId } = JSON.parse(character);
       setTokenId(tokenId);
@@ -59,7 +58,7 @@ const CharacterSelect = () => {
         console.log("minted", tokenId);
         localStorage.setItem(
           `game.character.${characterId}`,
-          JSON.stringify({ characterId, tokenId })
+          JSON.stringify({ characterId, tokenId, level: 1 })
         );
         setTokenId(tokenId);
       });

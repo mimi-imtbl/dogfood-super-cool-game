@@ -49,9 +49,12 @@ class Player {
 		level: 1,
 	}
 
+
 	const level = playerData.level > 5 ? 5 : playerData.level;
 
     const asset = `/assets/images/92px-character-image-${playerData.id}-${level}.png` || "/assets/images/ibis.png";
+
+		console.log('@@@@@@ asset', asset)
 
     this.ctx = ctx;
     this.gravity = g;
@@ -65,6 +68,8 @@ class Player {
     this.velocity = 0;
     this.speed = speed;
     this.image = createImage(asset) as HTMLOrSVGImageElement;
+		console.log('@@@@@@ image', this.image)
+
     this.wings = createImage(
       "/assets/images/wings.png"
     ) as HTMLOrSVGImageElement;
@@ -79,29 +84,32 @@ class Player {
   }
 
   draw() {
-    this.ctx.drawImage(
-      this.image,
-      0, // sx
-      0, // sy
-      this.sprite.x, // sWidth
-      92, // sHeight
-      this.position.x, // dx
-      this.position.y, // dy
-      this.sprite.x1, // dWidth
-      this.height // dHeight
-    );
+		try {
+			this.ctx.drawImage(
+				this.image,
+				0, // sx
+				0, // sy
+				this.sprite.x, // sWidth
+				92, // sHeight
+				this.position.x, // dx
+				this.position.y, // dy
+				this.sprite.x1, // dWidth
+				this.height // dHeight
+			);
+	
+			this.ctx.drawImage(
+				this.wings,
+				this.sprite.x * this.frames, // sx
+				0, // sy
+				this.sprite.x, // sWidth
+				64, // sHeight
+				this.position.x, // dx
+				this.position.y, // dy
+				this.sprite.x1, // dWidth
+				this.height // dHeight
+			);
 
-    this.ctx.drawImage(
-      this.wings,
-      this.sprite.x * this.frames, // sx
-      0, // sy
-      this.sprite.x, // sWidth
-      64, // sHeight
-      this.position.x, // dx
-      this.position.y, // dy
-      this.sprite.x1, // dWidth
-      this.height // dHeight
-    );
+		} catch {}
   }
 
   update() {

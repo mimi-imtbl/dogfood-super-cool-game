@@ -29,11 +29,16 @@ const LevelUpPage = () => {
     }
   }, [metadata, setPlayerAsset]);
 
+  const newLevel = (level || 1) + 1;
+
+  const imageURL = `https://dogfooding2024.s3.amazonaws.com/images/character-image-${character}-${
+    newLevel > 5 ? 5 : newLevel
+  }.png`;
+
   const levelUpImage = async () => {
     const baseURL =
       "https://caqou7aahh.execute-api.us-east-1.amazonaws.com/dev";
 
-    const newLevel = (level || 1) + 1;
     try {
       setLoading(true);
       await axios.post(`${baseURL}/upgrade`, {
@@ -53,6 +58,11 @@ const LevelUpPage = () => {
     setLoading(false);
     setUpgraded(true);
     // const level = localStorage.getItem("level");
+
+    localStorage.setItem(
+      `game.character.${character}`,
+      JSON.stringify({ characterId: character, tokenId, level: newLevel })
+    );
 
     localStorage.setItem("level", `${newLevel}`);
   };
@@ -87,7 +97,7 @@ const LevelUpPage = () => {
           },
         }}
       >
-        <Card.AssetImage imageUrl={playerAsset} />
+        <Card.AssetImage imageUrl={imageURL} />
         <Card.Caption>Level {level}</Card.Caption>
       </Card>
       <Box>

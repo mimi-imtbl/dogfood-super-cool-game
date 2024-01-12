@@ -80,7 +80,7 @@ export const init = (params = {} as InputParams) => {
       ? lastPipeX.position.x + SIZES.PIPE.WIDTH + 200
       : scrollOffset + 750;
 
-    const characterId = +(localStorage.getItem('character_id') || 1)
+    const characterId = +(localStorage.getItem('game.selected.character') || 1)
 
     const pipe1 = new Pipe({
       ctx,
@@ -133,8 +133,14 @@ export const init = (params = {} as InputParams) => {
 
   const loadPlayer = () => {
 
-    const characterId = +(localStorage.getItem('character_id') || 1)
-    const level = +(localStorage.getItem('level') || 1)
+    const characterId = +(localStorage.getItem('game.selected.character') || 1)
+    let playerLevel = 1;
+    try {
+      const { level } = JSON.parse(localStorage.getItem(`game.character.${characterId}`) || '{}');
+      console.log('@@@@ level', level)
+      playerLevel = level;
+    } catch {}
+
 
 
     player = new Player({
@@ -146,7 +152,7 @@ export const init = (params = {} as InputParams) => {
       playerAsset: params.playerAsset,
       playerData: {
         id: characterId,
-        level
+        level: playerLevel
       }
     });
     player.draw();
