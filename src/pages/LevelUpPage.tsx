@@ -7,11 +7,11 @@ import { Box, Button, Card } from "@biom3/react";
 import { useNavigate } from "react-router-dom";
 import { Confetti } from "../components/Confetti";
 
-const tempTokenId = 402471;
+// const tempTokenId = 402471;
 const LevelUpPage = () => {
   const { playerAsset, setPlayerAsset, tokenId } = useGameContext();
   const { metadata, fetchMetadata } = useTokenMetadata({
-    tokenId: tempTokenId,
+    tokenId: +tokenId,
   });
   const [loading, setLoading] = useState(false);
   const [upgraded, setUpgraded] = useState(false);
@@ -29,11 +29,21 @@ const LevelUpPage = () => {
     }
   }, [metadata, setPlayerAsset]);
 
-  const newLevel = (level || 1) + 1;
-
-  const imageURL = `https://dogfooding2024.s3.amazonaws.com/images/character-image-${character}-${
+  const characterId = +(localStorage.getItem("game.selected.character") || 1);
+  let playerLevel = 1;
+  try {
+    const { level } = JSON.parse(
+      localStorage.getItem(`game.character.${characterId}`) || "{}"
+    );
+    console.log("@@@@ level", level);
+    playerLevel = level;
+  } catch {}
+  const newLevel = playerLevel + 1;
+  const imageURL = `https://dogfooding2024.s3.amazonaws.com/images/character-image-${characterId}-${
     newLevel > 5 ? 5 : newLevel
   }.png`;
+
+  console.log("@@@ imageUrl", imageURL);
 
   const levelUpImage = async () => {
     const baseURL =
@@ -45,7 +55,7 @@ const LevelUpPage = () => {
         character_id: character,
         // eslint-disable-next-line @typescript-eslint/no-use-before-define
         level: newLevel,
-        token_id: tempTokenId,
+        token_id: tokenId,
       });
     } catch (error) {
       console.log("error", error);
@@ -60,8 +70,8 @@ const LevelUpPage = () => {
     // const level = localStorage.getItem("level");
 
     localStorage.setItem(
-      `game.character.${character}`,
-      JSON.stringify({ characterId: character, tokenId, level: newLevel })
+      `game.character.${characterId}`,
+      JSON.stringify({ characterId: characterId, tokenId, level: newLevel })
     );
 
     localStorage.setItem("level", `${newLevel}`);
@@ -98,7 +108,7 @@ const LevelUpPage = () => {
         }}
       >
         <Card.AssetImage imageUrl={imageURL} />
-        <Card.Caption>Level {level}</Card.Caption>
+        <Card.Caption>Level {newLevel}</Card.Caption>
       </Card>
       <Box>
         {!upgraded && (

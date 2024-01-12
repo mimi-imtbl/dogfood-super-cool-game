@@ -49,6 +49,7 @@ const CharacterSelect = () => {
     console.log("character", character);
 
     localStorage.setItem("game.selected.character", characterId + "");
+    localStorage.setItem("game.selected.character", characterId + "");
 
     if (character) {
       const { tokenId } = JSON.parse(character);

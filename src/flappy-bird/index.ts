@@ -133,7 +133,7 @@ export const init = (params = {} as InputParams) => {
 
   const loadPlayer = () => {
 
-    const characterId = +(localStorage.getItem('game.selected.character') || 1)
+    const characterId = +(localStorage.getItem('game.selected.character') || 1);
     let playerLevel = 1;
     try {
       const { level } = JSON.parse(localStorage.getItem(`game.character.${characterId}`) || '{}');

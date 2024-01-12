@@ -6,9 +6,9 @@ export type usePassportClientProps = {
 };
 
 export const usePassportClient = ({ environment }: usePassportClientProps) => {
-  const clientId = "SA6GIyUhpXHrSt0uWJIeWDTyVazbh5Op";
+  const clientId = "5lElL6IEz6mm1ZCBiURZ9FEVU93wEP5R";
   const redirectUri = "http://localhost:3000/login";
-  const logoutRedirectUri = "http://localhost:3000";
+  const logoutRedirectUri = "http://localhost:3000/logout";
 
   const [passport, setPassport] = useState<ImtblPassport.Passport | undefined>(
     undefined
