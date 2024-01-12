@@ -45,11 +45,13 @@ class Player {
   }: PlayerObjectConstructor) {
 
 		playerData = playerData ? playerData :  {
-		id: 2,
-		level: 5,
+		id: 1,
+		level: 1,
 	}
 
-    const asset = `/assets/images/92px-character-image-${playerData.id}-${playerData.level}.png` || "/assets/images/ibis.png";
+	const level = playerData.level > 5 ? 5 : playerData.level;
+
+    const asset = `/assets/images/92px-character-image-${playerData.id}-${level}.png` || "/assets/images/ibis.png";
 
     this.ctx = ctx;
     this.gravity = g;

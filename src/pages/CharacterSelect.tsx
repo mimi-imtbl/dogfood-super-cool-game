@@ -42,6 +42,8 @@ const CharacterSelect = () => {
 
   const onLetsGo = () => {
     setTokenId(selectedCharacter.id);
+
+    localStorage.setItem("best-score", "0");
     localStorage.setItem("character_id", `${selectedCharacter.id}`);
     localStorage.setItem("level", `1`);
 

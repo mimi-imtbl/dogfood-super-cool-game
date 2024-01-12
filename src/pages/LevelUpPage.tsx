@@ -17,10 +17,10 @@ const LevelUpPage = () => {
   const [upgraded, setUpgraded] = useState(false);
 
   const level = metadata?.attributes.filter(
-    (obj) => obj.trait_type === "Level",
+    (obj) => obj.trait_type === "Level"
   )[0].value;
   const character = metadata?.attributes.filter(
-    (obj) => obj.trait_type === "Character",
+    (obj) => obj.trait_type === "Character"
   )[0].value;
 
   useEffect(() => {
@@ -33,11 +33,13 @@ const LevelUpPage = () => {
     const baseURL =
       "https://caqou7aahh.execute-api.us-east-1.amazonaws.com/dev";
 
+    const newLevel = (level || 1) + 1;
     try {
       setLoading(true);
       await axios.post(`${baseURL}/upgrade`, {
         character_id: character,
-        level: (level || 0) + 1,
+        // eslint-disable-next-line @typescript-eslint/no-use-before-define
+        level: newLevel,
         token_id: tempTokenId,
       });
     } catch (error) {
@@ -50,6 +52,9 @@ const LevelUpPage = () => {
     await fetchMetadata();
     setLoading(false);
     setUpgraded(true);
+    // const level = localStorage.getItem("level");
+
+    localStorage.setItem("level", `${newLevel}`);
   };
 
   const navigate = useNavigate();
