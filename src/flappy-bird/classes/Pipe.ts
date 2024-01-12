@@ -23,6 +23,9 @@ class Pipe {
     this.image = createImage(
       `/assets/images/${ibisMode ? 'bin' : 'pipe'}-${this.state}.png`
     );
+    //     this.image = createImage(
+    //   `/assets/images/${false ? 'bin' : 'pipe'}-${this.state}.png`
+    // );
     this.ctx = ctx;
   }
 

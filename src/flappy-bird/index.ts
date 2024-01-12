@@ -80,8 +80,7 @@ export const init = (params = {} as InputParams) => {
       ? lastPipeX.position.x + SIZES.PIPE.WIDTH + 200
       : scrollOffset + 750;
 
-    // TODO get from localstorage
-    const characterId = 1;
+    const characterId = +(localStorage.getItem('character_id') || 1)
 
     const pipe1 = new Pipe({
       ctx,
@@ -133,6 +132,11 @@ export const init = (params = {} as InputParams) => {
   };
 
   const loadPlayer = () => {
+
+    const characterId = +(localStorage.getItem('character_id') || 1)
+    const level = +(localStorage.getItem('level') || 1)
+
+
     player = new Player({
       ctx,
       screenX: width,
@@ -140,6 +144,10 @@ export const init = (params = {} as InputParams) => {
       speed: CONFIG.PLAYER_SPEED,
       g: 0,
       playerAsset: params.playerAsset,
+      playerData: {
+        id: characterId,
+        level
+      }
     });
     player.draw();
   };
