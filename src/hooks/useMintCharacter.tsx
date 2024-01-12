@@ -18,11 +18,11 @@ export const useMintCharacter = ({
   characterId,
   walletAddress,
 }: UseMintCharacterProps) => {
-  const [isMining, setIsMining] = useState(false);
+  const [isMinting, setIsMinting] = useState(false);
 
   const mint = async (onSuccess?: OnSuccessFn) => {
     try {
-      setIsMining(true);
+      setIsMinting(true);
       const response = await axios.post(
         mintUrl,
         {
@@ -40,9 +40,9 @@ export const useMintCharacter = ({
     } catch (error) {
       console.log(error);
     } finally {
-      setIsMining(false);
+      setIsMinting(false);
     }
   };
 
-  return { mint, isMining };
+  return { mint, isMinting };
 };

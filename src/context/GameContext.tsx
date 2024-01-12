@@ -96,7 +96,7 @@ export const GameContextProvider = ({ children }: GameContextProviderProps) => {
         setIsConnecting(true);
         const userInfo = await passport?.getUserInfo();
         const addresses = await passport;
-        console.log("🚀 ~ addresses:", addresses);
+        console.log("🚀 ~ addresses:", await addresses?.getLinkedAddresses());
         console.log("🚀 ~ userInfo:", userInfo);
         if (userInfo) {
           setIsAuthenticated(true);

@@ -41,7 +41,7 @@ const CharacterSelect = () => {
     characterOptions[0]
   );
 
-  const { mint, isMining } = useMintCharacter({
+  const { mint, isMinting } = useMintCharacter({
     walletAddress,
     characterId: selectedCharacter.id,
   });
@@ -111,10 +111,10 @@ const CharacterSelect = () => {
         ))}
       </GridBox>
       <Box>
-        <Button onClick={onLetsGo} disabled={isMining}>
+        <Button onClick={onLetsGo} disabled={isMinting}>
           Let"s go!
           <Button.Icon
-            icon={isMining ? "Loading" : "ArrowForward"}
+            icon={isMinting ? "Loading" : "ArrowForward"}
             sx={{
               fill: "base.color.accent.1",
               width: "base.spacing.x6",
